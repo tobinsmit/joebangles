@@ -44,3 +44,7 @@ User actions are regular points, app actions are in \* \*
 - Collect prereqs for course
   - Search database and scrape handbook if not found
 
+## Pages being scraped
+- Course: https://www.handbook.unsw.edu.au/undergraduate/courses/2019/mman2100
+- Degree: https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/MTRNAH
+  - Browse engineering degrees here: https://www.handbook.unsw.edu.au/undergraduate/programs/2019/3707
