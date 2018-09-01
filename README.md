@@ -35,6 +35,8 @@ User actions are regular points, app actions are in \* \*
       - { prereq (string) }
         - usecases : { usecases (int) }
         - notusedcases : { notusedcases (int) }
+        - courses
+          - <courseid>
         
 ## Back end functions
 - Collect courses for degree
