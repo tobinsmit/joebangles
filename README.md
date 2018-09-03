@@ -18,26 +18,30 @@ User actions are regular points, app actions are in \* \*
 - Cards placed at top of page with form inputs like bojangles.
 
 ## Database Structure
-Firebase Cload Firestore structure: [] = a collection (like an array), {} = a document (like a small object). Have chosen  Cload Firestore as Realtime Database only supports 100 simultaneous connections at free tier.
-- [degrees]
-  - {degreeid}
+Have chosen  Cload Firestore as Realtime Database only supports 100 simultaneous connections at free tier.
+- degrees : collection
+  - {degreeid} : doc
     - longname : int
-    - description : string
     - usecases : int
-    - [courses]
-      - {courseid}
-        - usecases : int
-        - notusedcases : int
-- [courses]
-  - {courseid}
+    - courseLevels : obj
+      - {levelid} : obj
+        - complusory : obj
+          - {courseid} : obj
+            - longname : string
+            - usecases : int
+        - options : array
+          - {optionSetIndex} : obj
+            - {courseid} : obj
+              - longname : string
+              - usecases : int
+- courses : coll
+  - courseid : doc
     - longname : string
     - usecases : int
-    - [prereqs]
-      - {prereq}
-        - usecases : { usecases (int) }
-        - notusedcases : { notusedcases (int) }
-        - [courses]
-          - {courseid}
+    - prereqs : array
+      - {prereqIndex} : obj
+        - usecases : int
+        - prereq : string
         
 ## Back end functions
 - Collect courses for degree
