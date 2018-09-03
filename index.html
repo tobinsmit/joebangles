@@ -3,33 +3,41 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Daisy Program Planner">
-    <meta name="author" content="Tobin Smit">
-    <meta property="og:title" content="Daisy Program Planner">
-    <meta property="og:description" content="Daisy Program Planner">
-    <title>Daisy Program Planner</title>
+    <meta name="description" content="joebangles">
+    <meta name="author" content="Tobin Smit and Alex Air">
+    <meta property="og:title" content="joebangles">
+    <meta property="og:description" content="joebangles">
+    <title>joebangles</title>
 
     <!--  ================================================== -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-
-    <style type="text/css">
-      .med {
-        width: 400px;
-      }
-    </style>
+    <link href="/style.css" rel="stylesheet">
 
   </head>
 
-  <body class="text-center">
-    <div class="d-flex w-100 h-100 p-3 py-5 mx-auto flex-column justify-content-center" style="position: relative;">
+  <body>
+    <div class="container">
+      <h1 class="text-center mt-5 mb-3" id="title">joebangles</h1>
 
-      <h1>Daisy Program Planner</h1>
-
-      <form class="med mx-auto">
-        <input type="text" class="form-control" placeholder="Stream code" value="MTRNAH">
-        <button>Submit</button>
+      <form id="theform">
+        <div class="mb-3">
+          <label for="username">Specialisation</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/courses/2019/</span>
+            </div>
+            <input type="text" class="form-control" id="specialisation" placeholder="MTRNAH" required="" value="MTRNAH">
+            <div class="invalid-feedback" style="width: 100%;">
+              Your specialisation is required.
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary btn-lg btn-block w-50 mt-5 mx-auto" type="button" id="HMU">HMU</button>
       </form>
+
+      <div id="levels"></div>
+    </div>
       
       
 
@@ -37,6 +45,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
     <script src="script.js"></script>
 
   </body>
