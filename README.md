@@ -29,7 +29,7 @@ Have chosen  Cload Firestore as Realtime Database only supports 100 simultaneous
           - {courseid} : obj
             - longname : string
             - usecases : int
-        - options : array
+        - optionSets : array
           - {optionSetIndex} : obj
             - {courseid} : obj
               - longname : string
