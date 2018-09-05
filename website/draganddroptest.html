@@ -4,49 +4,28 @@
     <title>joebangles</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="css/dragula.min.css">
+    <link rel="stylesheet" type="text/css" href="css/dragdrop.css">
   </head>
 
   <body>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-     
-    <div id="left" style="padding:3px;position:absolute;width:100px;height:100px;border:3px solid black;">
-      <span class="draggable">Test</span>
-      <span class="draggable">boner</span>
-      <span class="draggable">fal</span>
-    </div>
-
-    <div id="middle" style="padding:3px;position:absolute;width:100px;height:100px;border:3px solid black; left:200px"></div>
-
-    <div id="right" style="padding:3px;position:absolute;width:100px;height:100px;border:3px solid black; left:400px">
-      <span class="draggable">1</span>
-      <span class="draggable">2</span>
-      <span class="draggable">3</span>
-    </div>
-
-    <button style="position:absolute;top: 200px;" onclick="myclick()">Add the containers in the far right box</button>
-    <p style="position:absolute;top:300px;">By default, only the containers (blue boxes) in the left hand box can be dragged into the middle box. Press the button to make the containers in the right hand box also draggable.</p>
-
     <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js'></script>
+    <script src="js/dragdrop.js"></script>
+     
+    <div class="draggable-container">
 
-    <script type="text/javascript">
-      var dragset = dragula([document.querySelector('#left'), document.querySelector('#middle')]);
+    </div>
 
-      function myclick() {
-        dragset.containers.push(document.querySelector('#right'))
-      }
+    <div class="draggable-container" style="left:200px">
       
-    </script>
+    </div>
+
+    <div class="draggable-container" style="left:400px">
+      <div class="draggable">
+        this is draggable
+      </div>
+    </div>
 
   </body>
-  <style type="text/css">
-    .draggable {
-      cursor: pointer;
-      border: solid 2px blue;
-      padding: 3px;
-      display: block;
-      margin-bottom: 3px;
-    }
-  </style>
 </html>
 
