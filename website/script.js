@@ -28,8 +28,9 @@ $('#HMU').on('click', function() {
 		courseLevels = doc.data().courseLevels;
 
 		// For each level
-		for (levelid in courseLevels) {
-			levelObj = courseLevels[levelid];
+		for (i_level in courseLevels) {
+			levelObj = courseLevels[i_level];
+			levelid = levelObj.levelid;
 
 			// Create div
 			levelDiv = document.createElement("div")
@@ -58,8 +59,8 @@ $('#HMU').on('click', function() {
 			}
 
 			// For each set of options
-			for (optionSetIndex in levelObj.options) {
-				optionSet = levelObj.options[optionSetIndex]
+			for (i_optionSet in levelObj.optionSets) {
+				optionSet = levelObj.optionSets[i_optionSet]
 
 				// Create div
         		optionDiv = document.createElement("div");
@@ -75,7 +76,7 @@ $('#HMU').on('click', function() {
 			        		radio.type = "radio";
 			        		radio.className = "custom-control-input";
 			        		radio.id = courseid;
-			        		radio.name = levelid + " " + optionSetIndex
+			        		radio.name = levelid + " " + i_optionSet
 			        		courseDiv.appendChild(radio);
 		        		label = document.createElement("label");
 			        		label.className = "custom-control-label";
@@ -98,4 +99,4 @@ $('#HMU').on('click', function() {
 		}
 
     });
-})
+});
