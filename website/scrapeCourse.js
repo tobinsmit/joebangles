@@ -7,10 +7,10 @@ function scrapeCourse(courseid) {
   var url = "https://www.handbook.unsw.edu.au/undergraduate/courses/2019/" + courseid;
 
   // Bellow only works for testing
-  $.get(url, function(response) {
+  // $.get(url, function(response) {
 
   // All Origins - times: 5000,3500,3500,5800,5254,5165,7203,6903
-  // $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
+  $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
     console.log("Scraping " + url);  
 
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
