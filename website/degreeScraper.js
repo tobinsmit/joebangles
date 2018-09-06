@@ -6,8 +6,13 @@ function scrapeDegree(specid) {
 
   var url = "https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/" + specid;
 
-  $.get(url, function(response) {
+  // Bellow only works for testing
+  // $.get(url, function(response) {
 
+  // All Origins - times: 5000,3500,3500,5800,5254,5165,7203,6903
+  $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
+   
+    // alert(response);
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
     doc["courseLevels"] = {};
 
@@ -51,9 +56,10 @@ function scrapeDegree(specid) {
 
   }) // End request
   .fail( function(error) {
-    console.log("ERROR degreeScraper. Invalid url");
+    console.log("ERROR degreeScraper. Unreachable url");
     console.error(error);
   });
+
 };
 
 $('#tester').on('click', function() {
