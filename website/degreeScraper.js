@@ -1,6 +1,6 @@
 function scrapeDegree(specid) {
 
-  console.log("retrieving specid: " + specid);
+  console.log("requesting website. specid: " + specid);
 
   doc = {}
 
@@ -14,37 +14,38 @@ function scrapeDegree(specid) {
    
     // alert(response);
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
-    doc["courseLevels"] = {};
+    doc["courseLevels"] = [];
 
     // Loop through levels
-    $(response).find('#structure .m-accordion').each( function(i, level){
+    $(response).find('#structure .m-accordion').each( function(i_level, level){
       levelid = $(level).prev().text().trim();
-      doc["courseLevels"][levelid] = {}
-      doc["courseLevels"][levelid]["compulsory"] = {};
-      doc["courseLevels"][levelid]["optionSets"] = [];
+      doc["courseLevels"][i_level] = {}
+      doc["courseLevels"][i_level]["levelid"] = levelid;
+      doc["courseLevels"][i_level]["compulsory"] = {};
+      doc["courseLevels"][i_level]["optionSets"] = [];
 
       // Loop through each sub level (compulsory then options)
-      $(level).find('.o-course-list').each( function(i, sublevel) {
-        if (i === 0) {
+      $(level).find('.o-course-list').each( function(i_sublevel, sublevel) {
+        if (i_sublevel === 0) {
           // Compulsory : first sublevel
 
-          $(sublevel).find('span.align-left').each( function(i, course) {
+          $(sublevel).find('span.align-left').each( function(i_course, course) {
             courseid = $(course).text();
             courseLongname = $(course).parent().next().text().trim();
-            doc["courseLevels"][levelid]["compulsory"][courseid] = {"longname" : courseLongname};
+            doc["courseLevels"][i_level]["compulsory"][courseid] = {"longname" : courseLongname};
           });
         } else {
           // Options : >= 2nd sublevel
 
-          optionSetData = {}; // For some reason "doc["courseLevels"][levelid]["optionSets"][i-1][courseid] = courseLongname" didn't work but this way does.
+          optionSetData = {}; // For some reason "doc["courseLevels"][i_level]["optionSets"][i_sublevel-1][courseid] = courseLongname" didn't work but this way does.
 
-          $(sublevel).find('span.align-left').each( (i, course) => {
+          $(sublevel).find('span.align-left').each( (i_course, course) => {
             courseid = $(course).text();
             courseLongname = $(course).parent().next().text().trim();
             optionSetData[courseid] = {"longname" : courseLongname};
           });
 
-          doc["courseLevels"][levelid]["optionSets"][i-1] = optionSetData; // needs to shift i by -1 because of the compulsory sublevel
+          doc["courseLevels"][i_level]["optionSets"][i_sublevel-1] = optionSetData; // needs to shift i_sublevel by -1 because of the compulsory sublevel
 
         }
        
@@ -53,6 +54,11 @@ function scrapeDegree(specid) {
     }); // End level loop
 
     console.log(doc);
+
+    db.doc("degrees/" + specid).set(doc, { merge: true })
+    .then(function() {
+      console.log("document uploaded");
+    })
 
   }) // End request
   .fail( function(error) {
