@@ -21,11 +21,11 @@
       <h1 class="text-center mt-5 mb-3" id="title">joebangles</h1>
 
       <form id="theform">
-        <div class="mb-3">
-          <label for="username">Specialisation</label>
+        <div class="form-group">
+          <label for="specialisation">Specialisation</label>
           <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/courses/2019/</span>
+              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/</span>
             </div>
             <input type="text" class="form-control" id="specialisation" placeholder="MTRNAH" required="" value="MTRNAH">
             <div class="invalid-feedback" style="width: 100%;">
@@ -33,8 +33,17 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-outline-primary btn-lg btn-block w-50 mt-5 mx-auto" type="button" id="HMU">HMU</button>
-        <button class="btn btn-outline-primary btn-lg btn-block w-50 mt-5 mx-auto" type="button" id="tester">tester</button>
+        <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="HMU">HMU</button>
+        <div class="form-group">
+          <label for="course">Course</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/courses/2019/</span>
+            </div>
+            <input type="text" class="form-control" id="course" placeholder="MMAN1300" required="" value="MMAN1300">
+          </div>
+        </div>
+        <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="tester">scrape to db</button>
       </form>
 
       <div id="degreeCourses"></div>
@@ -50,7 +59,8 @@
     <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
     <script src="script.js"></script>
-    <script src="degreeScraper.js"></script>
+    <script src="scrapeDegree.js"></script>
+    <script src="scrapeCourse.js"></script>
 
   </body>
 </html>

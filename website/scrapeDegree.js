@@ -11,8 +11,8 @@ function scrapeDegree(specid) {
 
   // All Origins - times: 5000,3500,3500,5800,5254,5165,7203,6903
   $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
-   
-    // alert(response);
+    console.log("Scraping " + url);  
+
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
     doc["courseLevels"] = [];
 
@@ -67,8 +67,3 @@ function scrapeDegree(specid) {
   });
 
 };
-
-$('#tester').on('click', function() {
-  var specid = document.getElementById("specialisation").value;
-  scrapeDegree(specid);
-});
