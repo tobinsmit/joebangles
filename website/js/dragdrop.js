@@ -16,6 +16,8 @@ var dragset = dragula({
     }
 });
 
+var scrollable = true;
+
 // This function is triggered when an element 'el' from source 'source' is dragged
 dragset.on('drag', function(el, source){
 
@@ -25,10 +27,25 @@ dragset.on('drag', function(el, source){
     	$('.group2').css("background-color","blue");
     } 
 
+    scrollable = false;
+
 });
 
 // This function is triggered when an element 'el' is dropped
 dragset.on('dragend', function(el){
+
 	$('.draggable-container').css("background-color","white");
+
+    scrollable = true;
+
 });
-	
+
+
+var listener = function(e) {
+    if (! scrollable) {
+        e.preventDefault();
+    }
+}
+
+document.addEventListener('touchmove', listener, { passive:false });
+
