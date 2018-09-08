@@ -19,11 +19,11 @@ $('#HMU').on('click', function() {
 	specid = document.getElementById("specialisation").value;
 	console.log("HMU spec:", specid);
 
-
 	// Get degree doc
 	db.doc("degrees/" + specid).onSnapshot(doc => {
 		if (doc.exists) {
 			console.log("doc found");
+			updateSpecProgressBanner("Loaded specialistation", "text-success");
 			fillDegreeCourses(doc.data());
 		} else {
 			console.log("doc not found");
@@ -31,8 +31,28 @@ $('#HMU').on('click', function() {
 		}
 		
 	});
-	
 });
+
+
+$("#tester").on("click", function() {
+	// Get course
+	courseid = document.getElementById("course").value;
+	console.log("tester courseid:", courseid);
+
+	// Get course doc
+	db.doc("courses/" + courseid).onSnapshot(doc => {
+		if (doc.exists) {
+			console.log("doc found");
+			updateCourseProgressBanner("Loaded course doc", "text-success");
+			// add doc.data()
+		} else {
+			console.log("doc not found");
+			scrapeCourse(courseid);
+		}
+		
+	});
+});
+
 
 // Fill the div #degreeCourses with course levels, levels, compulsory subs (checkbox) and option sets (radio)
 function fillDegreeCourses(data) {

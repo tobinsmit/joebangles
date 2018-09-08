@@ -24,24 +24,25 @@
         <a href="draganddroptest.html">Drag and Drop Test Page!</a><br><br>
         <div class="form-group">
           <label for="specialisation">Specialisation</label>
-          <div class="input-group">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/</span>
             </div>
             <input type="text" class="form-control" id="specialisation" placeholder="MTRNAH" required="" value="MTRNAH">
-            <div class="invalid-feedback" style="width: 100%;">
-              Your specialisation is required.
-            </div>
+          </div>
+          <div id="specProgressBanner" class="text-center">
           </div>
         </div>
         <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="HMU">HMU</button>
         <div class="form-group">
           <label for="course">Course</label>
-          <div class="input-group">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/courses/2019/</span>
             </div>
             <input type="text" class="form-control" id="course" placeholder="MMAN1300" required="" value="MMAN1300">
+          </div>
+          <div id="courseProgressBanner" class="text-center">
           </div>
         </div>
         <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="tester">scrape to db</button>
