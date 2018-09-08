@@ -20,6 +20,7 @@ $('#HMU').on('click', function() {
 	console.log("HMU spec:", specid);
 
 	// Get degree doc
+	updateSpecProgressBanner("Checking database");
 	db.doc("degrees/" + specid).onSnapshot(doc => {
 		if (doc.exists) {
 			console.log("doc found");
@@ -40,6 +41,7 @@ $("#tester").on("click", function() {
 	console.log("tester courseid:", courseid);
 
 	// Get course doc
+	updateCourseProgressBanner("Checking database");
 	db.doc("courses/" + courseid).onSnapshot(doc => {
 		if (doc.exists) {
 			console.log("doc found");
