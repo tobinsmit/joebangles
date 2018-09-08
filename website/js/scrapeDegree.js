@@ -1,6 +1,7 @@
 function scrapeDegree(specid) {
 
   console.log("requesting website. specid: " + specid);
+  updateSpecProgressBanner("Downloading handbook page");
 
   doc = {}
 
@@ -12,9 +13,16 @@ function scrapeDegree(specid) {
   // All Origins - times: 5000,3500,3500,5800,5254,5165,7203,6903
   $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
     console.log("Scraping " + url);  
+    updateSpecProgressBanner("Scraping data");  
 
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
     doc["courseLevels"] = [];
+
+    if (doc["longname"] === "") {
+      console.log("No title found. Assumed error page");
+      updateSpecProgressBanner("Page not found on the handbook", "text-danger");
+      return
+    }
 
     // Loop through levels
     $(response).find('#structure .m-accordion').each( function(i_level, level){
@@ -67,3 +75,7 @@ function scrapeDegree(specid) {
   });
 
 };
+
+function updateSpecProgressBanner(message, addClass) {
+  $("#specProgressBanner").html("<p class='" + addClass + "'>" + message + "</p>");
+}

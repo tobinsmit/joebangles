@@ -1,6 +1,7 @@
 function scrapeCourse(courseid) {
 
   console.log("requesting website. courseid: " + courseid);
+  updateCourseProgressBanner("Downloading handbook page");
 
   doc = {}
 
@@ -12,10 +13,17 @@ function scrapeCourse(courseid) {
   // All Origins - times: 5000,3500,3500,5800,5254,5165,7203,6903
   $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
     console.log("Scraping " + url);  
+    updateCourseProgressBanner("Scraping data");  
 
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
     doc["prereqs"] = [];
     doc["terms"] = [];
+
+    if (doc["longname"] === "") {
+      console.log("No title found. Assumed error page");
+      updateCourseProgressBanner("Page not found on the handbook", "text-danger");
+      return
+    }
 
 
     // Loop through prereq elements
@@ -64,6 +72,7 @@ function scrapeCourse(courseid) {
     db.doc("courses/" + courseid).set(doc, { merge: true })
     .then(function() {
       console.log("document uploaded");
+      updateCourseProgressBanner("Document uploaded", "text-success");
     })
 
   }) // End request
@@ -92,15 +101,8 @@ function cleanPrereqExp(exp) {
   return exp
 }
 
-$("#tester").on("click", function() {
-  // Get course
-  courseid = document.getElementById("course").value;
-  console.log("tester courseid:", courseid);
 
-  scrapeCourse(courseid);
-});
-
-
-
-
+function updateCourseProgressBanner(message, addClass) {
+  $("#courseProgressBanner").html("<p class='" + addClass + "'>" + message + "</p>");
+}
 
