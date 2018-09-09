@@ -8,29 +8,41 @@ firebase.initializeApp({
 	messagingSenderId: "729319341102"
 });
 var db = firebase.firestore();
+var longName;
+var spedid;
 
 // Dismiss warning
 db.settings({ timestampsInSnapshots: true });
 
 
-// HMU Click
-$('#HMU').on('click', function() {
+// addSpec Click
+$('#addSpec').on('click', function() {
 	// Get specialistation
-	specid = document.getElementById("specialisation").value;
+	specid = document.getElementById("specialisationTF").value;
 	console.log("HMU spec:", specid);
-
 
 	// Get degree doc
 	db.doc("degrees/" + specid).onSnapshot(doc => {
 		if (doc.exists) {
 			console.log("doc found");
-			fillDegreeCourses(doc.data());
+			longName = fillDegreeCourses(doc.data());
+			console.log(longName)
 		} else {
 			console.log("doc not found");
-			scrapeDegree(specid);
+			longName = scrapeDegree(specid);
 		}
+
+		// Add a row to the 'Specialisations Added' Table
+		$('#specialisationsTable').append(
+
+		'<tr><td>'+specid+' - '+longName+'</td>'+
+		'<td>Remove</td></tr>');
+
+		// Empty specialisationTF field
+		$('#specialisationTF').attr("value",""); 
+		$('#specialisationTF').attr("placeholder",""); 
 		
-	});
+	})
 	
 });
 
@@ -124,6 +136,7 @@ function fillDegreeCourses(data) {
 		degreeCourses.appendChild(levelDiv);
 
 	}
+	return data.longname;
 }
 
 

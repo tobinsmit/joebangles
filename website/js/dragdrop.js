@@ -13,7 +13,7 @@ var dragset = dragula({
     		} else {
     			return false
     		}
-    		
+    	
     	}
     // Any logic can go here that decides what element 'el' can be dropped into what target 'target'.
     // Documentation: https://github.com/bevacqua/dragula
