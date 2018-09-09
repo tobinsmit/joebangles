@@ -10,6 +10,7 @@ firebase.initializeApp({
 var db = firebase.firestore();
 var longName;
 var spedid;
+var specList = [];
 
 // Dismiss warning
 db.settings({ timestampsInSnapshots: true });
@@ -19,32 +20,49 @@ db.settings({ timestampsInSnapshots: true });
 $('#addSpec').on('click', function() {
 	// Get specialistation
 	specid = document.getElementById("specialisationTF").value;
-	console.log("HMU spec:", specid);
 
 	// Get degree doc
 	db.doc("degrees/" + specid).onSnapshot(doc => {
 		if (doc.exists) {
-			console.log("doc found");
 			longName = fillDegreeCourses(doc.data());
-			console.log(longName)
 		} else {
-			console.log("doc not found");
 			longName = scrapeDegree(specid);
+		}
+
+		// Add this spec to the list of specs added
+		specList.push(specid);
+
+		// If this is the first spec added, print the title for the table
+		if(specList.length == 1){
+			$('#specialisationsTable').append(
+
+			'<tr><td><b>Specialisations Added</b></td>');
 		}
 
 		// Add a row to the 'Specialisations Added' Table
 		$('#specialisationsTable').append(
 
 		'<tr><td>'+specid+' - '+longName+'</td>'+
-		'<td>Remove</td></tr>');
-
-		// Empty specialisationTF field
-		$('#specialisationTF').attr("value",""); 
-		$('#specialisationTF').attr("placeholder",""); 
+		'<td><span class="fa fa-times" style="cursor:pointer" onclick="removeSpec(&#39'+specid+'&#39)"></span></td></tr>');
 		
 	})
 	
 });
+
+// Removes the spec at index 'index' from the specList array
+function removeSpec(specID) {
+
+	var table = document.getElementById('specialisationsTable');
+
+	if(table.childNodes.length == 2){
+		table.removeChild(table.childNodes[1]);
+		table.removeChild(table.childNodes[0]);
+	} else {
+		table.removeChild(table.childNodes[specList.indexOf(specID)+1]);
+	}
+
+	specList.splice(specList.indexOf(specID), 1);
+}
 
 // Fill the div #degreeCourses with course levels, levels, compulsory subs (checkbox) and option sets (radio)
 function fillDegreeCourses(data) {
