@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>joebangles</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/dragula.min.css">
+    <link rel="stylesheet" type="text/css" href="css/dragdrop.css">
+  </head>
+
+  <body>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/dragdrop.js"></script>
+     
+    <!-- Top row of containers  -->
+    <div class="draggable-container group1">
+      <div id="draggable1" class="draggable">
+        draggable1
+      </div>
+    </div>
+    <div class="draggable-container group2" style="left:200px">
+      <div id="draggable2" class="draggable">
+        draggable2
+      </div>
+    </div>
+    <div class="draggable-container" style="left:400px"></div>
+
+    <!-- Bottom row of containers  -->
+    <div class="draggable-container group2" style="top:100px;"></div>
+    <div class="draggable-container group2 group1" style="left:200px;top:100px;"></div>
+    <div class="draggable-container group1" style="left:400px;top:100px;"></div>
+
+  </body>
+</html>
+
