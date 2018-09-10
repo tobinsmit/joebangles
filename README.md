@@ -14,34 +14,43 @@ User actions are regular points, app actions are in \* \*
 ## GUI
 - Structured on Bootstrap (latest version)
 - Single page application
-- Not sure about how to do drag and drop. Bojangles uses fabric.js and shows options when object dragged and rounds to nearest box when dropped. Surely there's a better way.
 - Cards placed at top of page with form inputs like bojangles.
+  - Select specialisations
+  - Enter completed courses
+  - Pick remaining electives
+- Table with courses as draggable elements for year and term containers. (dragula)
 
 ## Database Structure
 Have chosen  Cload Firestore as Realtime Database only supports 100 simultaneous connections at free tier.
 - degrees : collection
   - {degreeid} : doc
     - longname : int
-    - usecases : int
+    - usecases : int?
     - courseLevels : obj
       - {levelid} : obj
         - complusory : obj
           - {courseid} : obj
             - longname : string
-            - usecases : int
+            - usecases : int?
         - optionSets : array
           - {optionSetIndex} : obj
             - {courseid} : obj
               - longname : string
-              - usecases : int
+              - usecases : int?
 - courses : coll
   - courseid : doc
     - longname : string
-    - usecases : int
+    - usecases : int?
     - prereqs : array
       - {prereqIndex} : obj
-        - usecases : int
+        - usecases : int?
         - prereq : string
+    - terms : array
+      - {termIndex} : obj
+        - usecases : int?
+        - label : string
+        - terms : array
+          - {term} : string
         
 ## Back end functions
 - Collect courses for degree
