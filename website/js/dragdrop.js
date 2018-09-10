@@ -26,9 +26,9 @@ var scrollable = true;
 dragset.on('drag', function(el, source){
 
 	if($(el).attr('id') == 'draggable1'){
-		$('.group1').css("background-color","blue");
+		$('.group1').css("border-color","#19FF79");
     } else if($(el).attr('id') == 'draggable2'){
-    	$('.group2').css("background-color","blue");
+    	$('.group2').css("border-color","#19FF79");
     } 
 
     scrollable = false;
@@ -38,7 +38,7 @@ dragset.on('drag', function(el, source){
 // This function is triggered when an element 'el' is dropped
 dragset.on('dragend', function(el){
 
-	$('.draggable-container').css("background-color","white");
+	$('.draggable-container').css("border-color","#666");
 
     scrollable = true;
 
