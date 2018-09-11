@@ -36,14 +36,17 @@ $('#addSpec').on('click', function() {
 		if(specList.length == 1){
 			$('#specialisationsTable').append(
 
-			'<tr><td><b>Specialisations Added</b></td>');
+			'<tr><td><b>Specialisations</b></td>');
 		}
 
 		// Add a row to the 'Specialisations Added' Table
 		$('#specialisationsTable').append(
 
-		'<tr><td>'+specid+' - '+longName+'</td>'+
+		'<tr><td>'+specid+'</td>'+
 		'<td><span class="fa fa-times" style="cursor:pointer" onclick="removeSpec(&#39'+specid+'&#39)"></span></td></tr>');
+
+		// '<tr><td>'+specid+' - '+longName+'</td>'+
+		// '<td><span class="fa fa-times" style="cursor:pointer" onclick="removeSpec(&#39'+specid+'&#39)"></span></td></tr>');
 		
 	})
 	
@@ -73,7 +76,7 @@ function fillDegreeCourses(data) {
 
 	degreeTitle = document.createElement("h2")
 	degreeTitle.innerHTML = data.longname;
-	degreeTitle.className = "pt-5 pb-3";
+	degreeTitle.className = "pb-3";
 	degreeCourses.appendChild(degreeTitle);
 
 	courseLevels = data.courseLevels;
