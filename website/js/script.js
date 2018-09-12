@@ -12,6 +12,7 @@ var db = firebase.firestore();
 // Dismiss warning
 db.settings({ timestampsInSnapshots: true });
 
+courseList = [];
 
 // HMU Click
 $('#HMU').on('click', function() {

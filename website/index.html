@@ -37,7 +37,7 @@
         
         <div class="form-group">
           <div class="input-group" data-toggle="tooltip" data-placement="top">
-            <input type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
+            <input id="courseAddInput" type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
             <span class="input-group-append">
               <button type="button" class="btn btn-primary" id="course-srch">Add</button> 
             </span>
@@ -58,6 +58,8 @@
         <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="tester">scrape to db</button>
       </form>
 
+      <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="tester" onclick="getAllCourses()">getAllCourses</button>
+
       <div id="degreeCourses"></div>
     </div>
       
@@ -74,14 +76,11 @@
     <script src="js/script.js"></script>
     <script src="js/scrapeDegree.js"></script>
     <script src="js/scrapeCourse.js"></script>
+    <script src="js/getAllCourses.js"></script>
     <script>
 var $input = $(".typeahead");
 $input.typeahead({
-  source: [
-    {id: "someId1", name: "MMAN1300 - Mechanics of solids", category: "Mechanical and Manufacturing"},
-    {id: "someId1", name: "MMAN2300 - Mechanics of solids 2", category: "Mechanical and Manufacturing"},
-    {id: "someId2", name: "MATH2019 - Engineering Maths 2D", category: "Maths and Statistics"}
-  ],
+  source: courseList,
   autoSelect: true,
   showCategoryHeader: true,
   // highlighter: true,
@@ -89,6 +88,7 @@ $input.typeahead({
   showHintOnFocus: true,
   fitToElement: true
 });
+// using https://github.com/bassjobsen/Bootstrap-3-Typeahead
 // try https://twitter.github.io/typeahead.js/examples/
     </script>
 
