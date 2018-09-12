@@ -2,3 +2,15 @@
   max-width: 800px;
 }
 
+.internal-link {
+	cursor: pointer;
+}
+
+.internal-link:hover {
+	color:#888;
+}
+
+#specialisationTF {
+	text-transform: uppercase;
+}
+

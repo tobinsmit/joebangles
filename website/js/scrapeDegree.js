@@ -66,6 +66,4 @@ function scrapeDegree(specid) {
     console.error(error);
   });
 
-  return courseLongname
-
 };

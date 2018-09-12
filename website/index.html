@@ -22,8 +22,6 @@
 
       <form id="theform">
 
-        <a href="draganddroptest.html">Drag and Drop Test Page!</a><br><br>
-
         <div class="form-group">
           <label for="specialisationTF">Specialisation</label>
 
@@ -33,7 +31,7 @@
               <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/</span>
             </div>
 
-            <input type="text" class="form-control" id="specialisationTF" placeholder="MTRNAH" required="" value="MTRNAH">
+            <input type="text" class="form-control" id="specialisationTF" placeholder="MECHAH" required="" value="MECHAH">
 
             <div class="input-group-append">
               <button type="button" class="btn btn-primary" id="addSpec">Add</button>
@@ -49,7 +47,7 @@
 
       <form class="form-inline">
         <label class="mr-sm-2" for="year">Year</label>
-          <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="year">
+          <select class="custom-select mb-2 mr-sm-2 mb-sm-0 col" id="year">
             <option value="1">1st</option>
             <option value="2">2nd</option>
             <option value="3">3rd</option>
@@ -61,18 +59,34 @@
         &emsp;&emsp;
 
         <label class="mr-sm-2" for="year">Trimester</label>
-          <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="trimester">
+          <select class="custom-select mb-2 mr-sm-2 mb-sm-0 col" id="trimester">
             <option value="1">1st</option>
             <option value="2">2nd</option>
             <option value="3">3rd</option>
           </select>
+
+        &emsp;&emsp;
+
+        <input type="submit" name="next" value="Next" class="btn btn-success col">  
       </form>
       <br>
+      <span class="text-muted">Below, select the courses you have already completed.</span>
+      <br><br>
 
-      <div class="float-left">
-        <table  id="specialisationsTable"></table>
+      <div class="row">
+        <div class="col-3">
+          <!-- This table has to be on one line, function removeSpec does not like whitespace -->
+          <table  id="specialisationsTable"><tr><td><b>Specialisations</b></td></tr></table>
+        </div>
+        <div style="height:500px;overflow:auto;" class="col" id="degreeCourses">
+          <h2 style="text-align:center;">Add a Specialisation</h2>
+        </div>
       </div>
-      <div class="float-right" id="degreeCourses"></div>
+        
+      <br>
+
+      <br><br>
+     
 
 <!--         <div class="form-group">
           <label for="course">Course</label>
