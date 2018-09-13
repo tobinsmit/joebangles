@@ -3,41 +3,45 @@ var drake = dragula({
         return el.classList.contains('draggable-container');
     },
     accepts: function(el, target, source, sibling){
-
-    	if(!target.hasChildNodes()){
-
-    		if($(el).attr('id') == 'draggable1'){
-    			return target.classList.contains('group1');
-    		} else if($(el).attr('id') == 'draggable2'){
-    			return target.classList.contains('group2');
-    		} else {
-    			return false
-    		}
-    		
-    	}
-    // Any logic can go here that decides what element 'el' can be dropped into what target 'target'.
-    // Documentation: https://github.com/bevacqua/dragula
+    	return checkIfValid(el, target);
     }
 });
 
 var scrollable = true;
 
-// This function is triggered when an element 'el' from source 'source' is dragged
+// el was lifted from source
 drake.on('drag', function(el, source){
-	if($(el).attr('id') == 'draggable1'){
-		$('.group1').css("background-color","blue");
-    } else if($(el).attr('id') == 'draggable2'){
-    	$('.group2').css("background-color","blue");
-    } 
-
     scrollable = false;
+
+	$('.draggable-container').each( function(i_term, term) {
+		if (checkIfValid(el, term) && !$(term).hasClass('unassigned')) {
+			$(term).css("background-color","blue");
+		} else {
+			$(term).css("background-color","white");
+		}
+	});
+
 });
 
-// This function is triggered when an element 'el' is dropped
+// Dragging event for el ended with either cancel, remove, or drop
 drake.on('dragend', function(el){
-	$('.draggable-container').css("background-color","white");
-    
     scrollable = true;
+
+    $('.term, .unassigned').css("background-color","white");
+	$('.course').each( function() {
+		if (checkIfValid(this, $(this).parent())) {
+			$(this).css("background-color","#aaa");
+		} else {
+			$(this).css("background-color","red");
+		}
+	})
+    
+});
+
+// el was dropped into target before a sibling element, and originally came from source
+drake.on('drop', function(el, target, source, sibling){
+    // Update el's selected term and year
+    $('.draggable-container').css("background-color","white");
 });
 
 
@@ -49,6 +53,48 @@ var listener = function(e) {
 }
 document.addEventListener('touchmove', listener, { passive:false });
 
+
+checkIfValid = function(el, target) {
+	// Accept unnasigned
+	if ($(target).hasClass('unassigned')){
+		return true
+	}
+
+	// Check course is available in sem
+	availableTerms = $(el).data("available-terms") || [];
+	prereq = $(el).data("prereq") || "1";
+	targetTerm = $(target).data('term');
+	if (!availableTerms.includes(targetTerm)) {
+		return false
+	}
+
+	// Check prereq is satisfied
+	$('.year').each( function(i_year, year) {
+		if ($(year).data('year') < $(target).parent().data('year')) {
+			// Previous year
+			$(year).find('.course').each( function(i_course, course) {
+				prereq = prereq.replace($(course).attr('id'),"1")
+			});
+		} else if ($(year).data('year') == $(target).parent().data('year')) {
+			// Current year
+			$(year).find('.term').each( function(i_term, term) {
+				if ($(term).data('term') < $(target).data('term')) {
+					// Previous term
+					$(term).find('.course').each( function(i_course, course) {
+						prereq = prereq.replace($(course).attr('id'),"1")
+					});
+				}
+			});
+		}
+	});
+	prereq = prereq.replace(/[A-Z]{4}[0-9]{4}/,"0");
+	prereq = eval(prereq)
+	if (!prereq) {
+		return 0
+	}
+  
+	return true
+}
 
 
 examplePlan = {
@@ -67,7 +113,7 @@ examplePlan = {
 	plannedCourses : {
 		"PHYS1121" : {
 			longname : "Physics 1A",
-			availableTerms : ["Summer Term", "Term 1", "Term 2", "Term 3"]
+			availableTerms : ["Summer Term", "Term 1", "Term 2", "Term 3"],
 			chosenTerm : ["Term 1"]
 		},
 		"MMAN2100" : {
