@@ -12,7 +12,16 @@ var db = firebase.firestore();
 // Dismiss warning
 db.settings({ timestampsInSnapshots: true });
 
-courseList = [];
+// Get all courses for typeahead
+db.doc("other/commonInfo").onSnapshot(doc => {
+	if (doc.exists) {
+		console.log("Course list doc found");
+		$input.data('typeahead').source = doc.data().courseList;
+	} else {
+		console.log("Course list doc NOT found");
+	}
+})
+
 
 // HMU Click
 $('#HMU').on('click', function() {
