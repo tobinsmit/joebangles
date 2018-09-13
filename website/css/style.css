@@ -1,5 +1,5 @@
 .container {
-  max-width: 800px;
+  max-width: 1000px;
 }
 
 .internal-link {
@@ -14,3 +14,23 @@
 	text-transform: uppercase;
 }
 
+#degreeCourses {
+	width:100%;
+	table-layout:fixed;
+}
+
+#degreeCoursesTitle {
+	text-align: center;
+}
+
+.degreeCourses-nameTF {
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis
+}
+
+.term-btn:hover {
+	background-color: #bbb;
+	color: #fff;
+	/*6c757d*/
+}

@@ -10,10 +10,20 @@ firebase.initializeApp({
 var db = firebase.firestore();
 var spedid;
 var specList = [];
+var courseList = [];
 
 // Dismiss warning
 db.settings({ timestampsInSnapshots: true });
 
+// Get all courses for typeahead
+db.doc("other/commonInfo").onSnapshot(doc => {
+	if (doc.exists) {
+		console.log("Course list doc found");
+		input.data('typeahead').source = doc.data().courseList;
+	} else {
+		console.log("Course list doc NOT found");
+	}
+});
 
 // addSpec Click
 $('#addSpec').on('click', function() {
@@ -43,7 +53,7 @@ $('#addSpec').on('click', function() {
 
 function retrieveSpec(specID){
 
-	$("#degreeCourses").html("<h2 style='text-align:center;color:#555;'>Loading</h2>");
+	$('#degreeCoursesTitle').html("Loading...");
 	db.doc("degrees/" + specID).onSnapshot(doc => {
 		if (doc.exists) {
 			fillDegreeCourses(doc.data());
@@ -69,100 +79,96 @@ function removeSpec(specID) {
 	if(specList.length != 0){
 		retrieveSpec(specList[0])
 	} else {
-		document.getElementById('degreeCourses').innerHTML = "<h2 style='text-align:center;'>Add a Specialisation</h2>";
+		$('#degreeCoursesTitle').html("Add a Specialisation");
 	}
 }
 
 // Fill the div #degreeCourses with course levels, levels, compulsory subs (checkbox) and option sets (radio)
 function fillDegreeCourses(data) {
 
-	// Clear div
-	degreeCourses = document.getElementById('degreeCourses');
-	degreeCourses.innerHTML = "";
+	$('#degreeCoursesTitle').html(data.longname);
 
-	degreeTitle = document.createElement("h2")
-	degreeTitle.innerHTML = data.longname;
-	degreeTitle.className = "pb-3";
-	degreeCourses.appendChild(degreeTitle);
+	// Reset div
+	$('#degreeCourses').html(
+		'<table id="degreeCourses"><tr>'+
+		 	'<td style="width:20px;"></td>'+
+            '<td style="width:100px;"><b>Course</b></td>'+
+            '<td><b>Name</b></td>'+
+            '<td style="width:165px;"><b>Terms</b></td>'+
+		'</tr>'
+	);
 
 	courseLevels = data.courseLevels;
 
 	// For each level
 	for (i_level in courseLevels) {
+
 		levelObj = courseLevels[i_level];
 		levelid = levelObj.levelid;
 
-		// Create div
-		levelDiv = document.createElement("div")
-    	levelTitle = document.createElement("h4")
-    	levelTitle.innerHTML = levelid;
-    	levelDiv.appendChild(levelTitle);
+		$('#degreeCourses').append(
+			'<tr>'+
+				'<td></td>'+
+				'<td></td>'+
+				'<td><b>'+levelid+'</b></td>'+
+			'</tr>'
+		);
 
 		// For each compulsory course
 		for (courseid in levelObj.compulsory) {
 			courseObj = levelObj.compulsory[courseid];
 
-			// Add course div with checkbox
-    		courseDiv = document.createElement("div");
-        		courseDiv.className = "custom-control custom-checkbox";
-        		checkbox = document.createElement("input");
-	        		checkbox.type = "checkbox";
-	        		checkbox.className = "custom-control-input";
-	        		checkbox.id = courseid;
-	        		courseDiv.appendChild(checkbox);
-        		label = document.createElement("label");
-	        		label.className = "custom-control-label active";
-	        		label.htmlFor = courseid;
-	        		label.innerHTML = courseid + ' - ' + courseObj.longname;
-	        		courseDiv.appendChild(label);
-        		levelDiv.appendChild(courseDiv);
+			$('#degreeCourses').append(
+				'<tr>'+
+					'<td><input type="checkbox" id="'+courseid+'"></td>'+
+					'<td>'+courseid+'</td>'+
+					'<td class="degreeCourses-nameTF">'+courseObj.longname+'</td>'+
+					'<td>'+
+						'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
+							'<button type="button" class="btn btn-outline-secondary term-btn">1</button>'+
+							'<button type="button" class="btn btn-outline-secondary term-btn">2</button>'+
+							'<button type="button" class="btn btn-outline-secondary term-btn">3</button>'+
+							'<button type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
+						'</div>'+
+					'</td>'+
+				'</tr>'
+			);
+
 		}
 
 		// For each set of options
 		for (i_optionSet in levelObj.optionSets) {
 			optionSet = levelObj.optionSets[i_optionSet]
 
-			// Create div
-    		optionDiv = document.createElement("div");
-
-    		// If first optionSet, insert br
-    		if (i_optionSet == 0) {
-    			br = document.createElement("br");
-    			optionDiv.appendChild(br);
-    		}
+    		$('#degreeCourses').append(
+				'<tr>'+
+					'<td></td>'+
+					'<td></td>'+
+					'<td><b style="color:#666">Choose one of the following:</b></td>'+
+				'</tr>'
+			);
 
     		// For each course in each set of options
     		for (courseid in optionSet) {
     			courseObj = optionSet[courseid];
 
-    			// Create course div with radio. Radios are linked for each option set.
-    			courseDiv = document.createElement("div");
-        			courseDiv.className = "custom-control custom-radio custom-control-inline";
-	        		radio = document.createElement("input");
-		        		radio.type = "radio";
-		        		radio.className = "custom-control-input";
-		        		radio.id = courseid;
-		        		radio.name = levelid + " " + i_optionSet
-		        		courseDiv.appendChild(radio);
-	        		label = document.createElement("label");
-		        		label.className = "custom-control-label";
-		        		label.htmlFor = courseid;
-		        		label.innerHTML = courseid + ' - ' + courseObj.longname;
-		        		courseDiv.appendChild(label);
-	        		optionDiv.appendChild(courseDiv);
+    			$('#degreeCourses').append(
+					'<tr>'+
+						'<td><input name="'+levelid + " " + i_optionSet+'" type="radio" id="'+courseid+'"></td>'+
+							'<td>'+courseid+'</td>'+
+						'<td class="degreeCourses-nameTF">'+courseObj.longname+'</td>'+
+						'<td>'+
+							'<div class="btn-group" role="group">'+
+								'<button type="button" class="btn btn-outline-secondary term-btn">1</button>'+
+								'<button type="button" class="btn btn-outline-secondary term-btn">2</button>'+
+								'<button type="button" class="btn btn-outline-secondary term-btn">3</button>'+
+								'<button type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
+							'</div>'+
+						'</td>'+
+					'</tr>'
+				);
 
     		}
-
-    		levelDiv.appendChild(optionDiv);
 		}
-
-		// Add divider
-		hr = document.createElement("hr");
-		levelDiv.appendChild(hr);
-
-		degreeCourses.appendChild(levelDiv);
-
 	}
 }
-
-
