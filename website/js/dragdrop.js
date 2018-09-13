@@ -4,7 +4,7 @@ var dragset = dragula({
     },
     accepts: function(el, target, source, sibling){
 
-    	if(!target.hasChildNodes()){
+    	//if(!target.hasChildNodes()){
 
     		if($(el).attr('id') == 'draggable1'){
     			return target.classList.contains('group1');
@@ -14,7 +14,7 @@ var dragset = dragula({
     			return false
     		}
     	
-    	}
+    	//}
     // Any logic can go here that decides what element 'el' can be dropped into what target 'target'.
     // Documentation: https://github.com/bevacqua/dragula
     }
