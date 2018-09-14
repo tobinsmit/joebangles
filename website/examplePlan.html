@@ -10,33 +10,122 @@
     <link rel="stylesheet" type="text/css" href="css/examplePlan.css">
   </head>
 
-  <body class="container text-center">
+  <body class="container text-center pt-3">
     <!-- Top row of containers  -->
-    <div class="row">
-      <div class="col draggable-container unassigned">
-        Unnassigned
-        <div id="MATH1131" class="draggable course" data-available-terms="[2,3]" data-toggle="tooltip" title="Terms: 2,3">
-          MATH1131
-        </div>
-        <div id="MATH1141" class="draggable course" data-available-terms="[1,2,3]" data-prereq="MATH1131" data-toggle="tooltip" data-html="true" title="Terms 1,2,3<br>Prereq: MATH1131">
-          MATH1141
-        </div>
-        <div id="PHYS1121" class="draggable course" data-available-terms="[1,2]" data-toggle="tooltip" title="Terms 1,2">
-          PHYS1121
+    <div class="card">
+      <div class="card-header">
+        <h5 class="m-0">Completed</h5>
+      </div>
+      <div class="card-body">
+        <div class="row unassigned draggable-container">
+          <div id="MATH1131" class="draggable course" data-available-terms="[2,3]" data-toggle="tooltip" title="Terms: 2,3">
+            MATH1131
+          </div>
+          <div id="MATH1141" class="draggable course" data-available-terms="[1,2,3]" data-prereq="MATH1131" data-toggle="tooltip" data-html="true" title="Terms 1,2,3<br>Prereq: MATH1131">
+            MATH1141
+          </div>
+          <div id="PHYS1121" class="draggable course" data-available-terms="[1,2]" data-toggle="tooltip" title="Terms 1,2">
+            PHYS1121
+          </div>
+           <div id="PHYS1121" class="draggable course" data-available-terms="[1,2]" data-toggle="tooltip" title="Terms 1,2">
+            PHYS1121
+          </div>
         </div>
       </div>
     </div>
-    <div class="row year" data-year="1">
-      <div class="col draggable-container term" data-term="1"></div>
-      <div class="col draggable-container term" data-term="2"></div>
-      <div class="col draggable-container term" data-term="3"></div>
-    </div>
-    <div class="row year" data-year="2">
-      <div class="col draggable-container term" data-term="1"></div>
-      <div class="col draggable-container term" data-term="2"></div>
-      <div class="col draggable-container term" data-term="3"></div>
+
+    <br>
+
+    <br>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="card unassigned draggable-container">
+          <div class="card-header">
+            Unassigned
+          </div>
+          <div class="card-body unassigned draggable-container">
+            <div id="MATH1131" class="draggable course" data-available-terms="[2,3]" data-toggle="tooltip" title="Terms: 2,3">
+              MATH1131
+            </div>
+            <div id="MATH1141" class="draggable course" data-available-terms="[1,2,3]" data-prereq="MATH1131" data-toggle="tooltip" data-html="true" title="Terms 1,2,3<br>Prereq: MATH1131">
+              MATH1141
+            </div>
+            <div id="PHYS1121" class="draggable course" data-available-terms="[1,2]" data-toggle="tooltip" title="Terms 1,2">
+              PHYS1121
+            </div>
+             <div id="PHYS1121" class="draggable course" data-available-terms="[1,2]" data-toggle="tooltip" title="Terms 1,2">
+              PHYS1121
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="card">
+          <table class="table mb-0" style="table-layout: fixed;">
+            <thead>
+              <tr class="">
+                <th scope="col" style="width: 16%;">Year</th>
+                <th scope="col" style="width: 28%;">Term 1</th>
+                <th scope="col" style="width: 28%;">Term 2</th>
+                <th scope="col" style="width: 28%;">Term 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="year" data-year="1">
+                <th scope="row">1</th>
+                <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
+                <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
+                <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+              </tr>
+              <tr class="year" data-year="2">
+                <th scope="row">2</th>
+                <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
+                <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
+                <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+              </tr>
+              <tr class="year" data-year="3">
+                <th scope="row">3</th>
+                <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
+                <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
+                <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
+
+    <!-- <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">Year</div>
+            <div class="col">Term 1</div>
+            <div class="col">Term 2</div>
+            <div class="col">Term 3</div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="row m-0 year" data-year="1">
+            <div class="col d-flexalign-items-center p-0"><p>1</p></div>
+            <div class="col p-0 draggable-container term" data-term="1"></div>
+            <div class="col p-0 draggable-container term" data-term="2"></div>
+            <div class="col p-0 draggable-container term" data-term="3"></div>
+          </div>
+          <div class="row m-0 year" data-year="1">
+            <div class="col p-0">1</div>
+            <div class="col p-0 draggable-container term" data-term="1"></div>
+            <div class="col p-0 draggable-container term" data-term="2"></div>
+            <div class="col p-0 draggable-container term" data-term="3"></div>
+          </div>
+          <div class="row m-0 year" data-year="1">
+            <div class="col p-0">1</div>
+            <div class="col p-0 draggable-container term" data-term="1"></div>
+            <div class="col p-0 draggable-container term" data-term="2"></div>
+            <div class="col p-0 draggable-container term" data-term="3"></div>
+          </div>
+        </div>
+    </div> -->
 
     <!--  ================================================== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
