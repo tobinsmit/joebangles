@@ -71,10 +71,10 @@
         <input type="submit" name="next" value="Next" class="btn btn-success col">  
       </form>
       <br>
-      <span class="text-muted">Below, select the courses you have already completed.</span>
-      <br><br>
-
     </div>
+
+    <span class="text-muted">Below, select the courses you have already completed.</span>
+    <br><br>
 
       <div class="row">
         <div class="col-3">
@@ -84,52 +84,39 @@
 
         <div style="height:500px;overflow:auto;" class="col">
           <h2 id="degreeCoursesTitle">Add a Specialisation</h2>
-          <table id="degreeCourses"></table>
+          <div class="accordian" id="degreeCourses"></div>
         </div>
       </div>
 
       <br>
-      <span class="text-muted"></span>
+      <span class="text-muted">Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
+      <br><br>
 
       <!-- Individual Courses Section -->
 
-      <div class="row">
-
-        <div class="col-5">
           <label for="courseTF">Course</label>
           <div class="input-group" data-toggle="tooltip" data-placement="top">
             <input id="courseAddInput" type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
             <span class="input-group-append">
-              <button type="button" class="btn btn-primary" id="course-srch">Add</button> 
+              <button type="button" class="btn btn-primary" id="addCourse">Add</button> 
             </span>
           </div>
-        </div>
 
-        <div style="height:300px;overflow:auto;" class="col-3">
-          <!-- This table has to be on one line, function removeCourse does not like whitespace -->
-          <table  id="coursesTable"><tr><td><b>Courses</b></td></tr>
-            <tr><td><span class="internal-link">MMAN1300</span></td>
-            <td><span class="fa fa-times" style="cursor:pointer"></span></td></tr>
+        <br>
+        <div style="height:300px;overflow:auto;">
+          <!-- Dont change the indentation of this table, function removeCourse does not like whitespace -->
+          <table id="coursesTable">
+            <tr>
+              <td style="width:30px;"></td>
+              <td style="width:30px;"></td>
+              <td style="width:100px;"><b>Course</b></td>
+              <td><b>Name</b></td>
+              <td style="width:165px;"><b>2019 Terms</b></td>
+            </tr>
           </table>
         </div>
-      </div>
-        
-      <br>
-
-      <br><br>
-     
-
-<!--         <div class="form-group">
-          <label for="course">Course</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/courses/2019/</span>
-            </div>
-            <input type="text" class="form-control" id="course" placeholder="MMAN1300" required="" value="MMAN1300">
-          </div>
-        </div>
-        <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="tester">scrape to db</button> -->
-      
+        <span style="display:table;margin:0 auto" class="text-muted">Developed by two engineering students who dont like trimesters.</span>
+        <br>
     </div>
       
     <!--  ================================================== -->
@@ -148,7 +135,6 @@
         <script>
           var input = $(".typeahead");
           input.typeahead({
-            source: courseList,
             autoSelect: true,
             showCategoryHeader: true,
             // highlighter: true,

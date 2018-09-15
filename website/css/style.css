@@ -14,7 +14,7 @@
 	text-transform: uppercase;
 }
 
-#degreeCourses {
+.degreeCoursesTable {
 	width:100%;
 	table-layout:fixed;
 }
@@ -33,4 +33,8 @@
 	background-color: #bbb;
 	color: #fff;
 	/*6c757d*/
+}
+
+#coursesTable {
+	width: 100%;
 }
