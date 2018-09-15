@@ -14,6 +14,7 @@
 }
 .term-option {
   background-color: lightblue;
+  /*background-color: #0FB;*/
 }
 
 .course {
@@ -32,11 +33,11 @@
 }
 .gu-transit {
   background-color: white;
-  /*color: white;*/
   opacity: 0.8;
 }
 .gu-mirror {
   /*background-color: yellow;*/
+  opacity: 0.9;
 }
 
 .box {
