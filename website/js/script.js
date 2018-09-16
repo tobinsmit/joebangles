@@ -12,7 +12,16 @@ var db = firebase.firestore();
 // Dismiss warning
 db.settings({ timestampsInSnapshots: true });
 
-// Get all courses for typeahead
+// Typeahead
+var $input = $(".typeahead");
+$input.typeahead({
+  autoSelect: true,
+  showCategoryHeader: true,
+  // highlighter: true,
+  minLength: 0,
+  showHintOnFocus: true,
+  fitToElement: true
+});
 db.doc("other/commonInfo").onSnapshot(doc => {
 	if (doc.exists) {
 		console.log("Course list doc found");
