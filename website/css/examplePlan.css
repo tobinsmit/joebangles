@@ -1,0 +1,45 @@
+.container {
+  max-width: 800px;
+}
+
+.year {
+  /*min-height: 100px;*/
+}
+
+.term {
+  /*width:100px;*/
+  margin: 2px;
+  min-height: 100px;
+  background-color: white;
+}
+.term-option {
+  background-color: lightblue;
+  /*background-color: #0FB;*/
+}
+
+.course {
+  /*min-height: 100px;*/
+  /*max-width: 100px;*/
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
+  margin: 2px;
+  background-color: lightgray;
+}
+.course-invalid{
+  background-color: red;
+  color: white;
+  padding: 13px;
+}
+.gu-transit {
+  background-color: white;
+  opacity: 0.8;
+}
+.gu-mirror {
+  /*background-color: yellow;*/
+  opacity: 0.9;
+}
+
+.box {
+  border:3px solid black; 
+}
