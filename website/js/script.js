@@ -58,7 +58,7 @@ $('#addCourse').on('click', function() {
 	courseid = $('#courseAddInput').val().substring(0,8);
 	courselongname = $('#courseAddInput').val().substring(11);
 
-	if(courseList.indexOf(courseid) == -1){
+	if(courseList.indexOf(courseid) == -1 && courseid != ""){
 
 		$('#coursesTable').append(
 			'<tr>'+
@@ -193,20 +193,30 @@ function courseSelectDeselect(courseID){
 
 }
 
+// When the terms are changed
+function termChange(btnID){
+
+	var courseID = btnID.substring(0,8);
+	var courseStatus;
+
+	if(typeof planData.plannedCourses["'"+courseID+"'"] !== 'undefined'){
+		courseStatus = planData.plannedCourses["'"+courseID+"'"];
+	} else {
+		courseStatus = planData.completedCourses["'"+courseID+"'"];
+	}
+
+	//courseStatus.availableTerms = // HERE
+
+}
+
 // Fill the div #degreeCourses with course levels, levels, compulsory subs (checkbox) and option sets (radio)
 function fillDegreeCourses(data) {
 
+	// Set Title
 	$('#degreeCoursesTitle').html(data.longname);
 
 	// Reset div
-	// $('#degreeCourses').html(
-	// 	'<table id="degreeCourses"><tr>'+
-	// 	 	'<td style="width:20px;"></td>'+
- //            '<td style="width:100px;"><b>Course</b></td>'+
- //            '<td><b>Name</b></td>'+
- //            '<td style="width:165px;"><b>2019 Terms</b></td>'+
-	// 	'</tr>'
-	// );
+	$('#degreeCourses').html("");
 
 	courseLevels = data.courseLevels;
 

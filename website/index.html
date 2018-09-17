@@ -17,10 +17,14 @@
   </head>
 
   <body>
-    <div class="container">
-      <h1 class="text-center mt-5 mb-3" id="title">joebangles</h1>
 
-      <div style="max-width:800px;margin: 0 auto;">
+    <!-- Step 1 -->
+
+    <div class="background" style="background-color:#3596B2;">
+
+      <h1 class="text-center mt-3 mb-4" id="title">joebangles</h1>
+
+      <div class="container">
       <form id="theform">
 
         <div class="form-group">
@@ -70,40 +74,49 @@
 
         <input type="submit" name="next" value="Next" class="btn btn-success col">  
       </form>
-      <br>
+      </div>
     </div>
 
-    <span class="text-muted">Below, select the courses you have already completed.</span>
-    <br><br>
+    <!-- Step 2 -->
 
-      <div class="row">
-        <div class="col-3">
-          <!-- This table has to be on one line, function removeSpec does not like whitespace -->
-          <table  id="specialisationsTable"><tr><td><b>Specialisations</b></td></tr></table>
-        </div>
+    <div class="background" style="background-color:#A4EAFF">
+      <div class="container">
 
-        <div style="height:500px;overflow:auto;" class="col">
-          <h2 id="degreeCoursesTitle">Add a Specialisation</h2>
-          <div class="accordian" id="degreeCourses"></div>
-        </div>
-      </div>
+        <span class="text-muted">Below, select the courses you have already completed.</span>
+        <br><br>
 
-      <br>
-      <span class="text-muted">Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
-      <br><br>
-
-      <!-- Individual Courses Section -->
-
-          <label for="courseTF">Course</label>
-          <div class="input-group" data-toggle="tooltip" data-placement="top">
-            <input id="courseAddInput" type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
-            <span class="input-group-append">
-              <button type="button" class="btn btn-primary" id="addCourse">Add</button> 
-            </span>
+        <div class="row">
+          <div class="col-3">
+            <!-- This table has to be on one line, function removeSpec does not like whitespace -->
+            <table  id="specialisationsTable"><tr><td><b>Specialisations</b></td></tr></table>
           </div>
+          <!-- style="height:500px;overflow:auto;" -->
+          <div class="col">
+            <h2 id="degreeCoursesTitle">Add a Specialisation</h2>
+            <div class="accordian" id="degreeCourses"></div>
+          </div>
+        </div>
 
         <br>
-        <div style="height:300px;overflow:auto;">
+        <span class="text-muted">Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+
+    <div class="background" style="background-color:#7EE2FF;">
+      <div class="container">
+
+        <label for="courseTF">Course</label>
+        <div class="input-group" data-toggle="tooltip" data-placement="top">
+          <input id="courseAddInput" type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
+          <span class="input-group-append">
+            <button type="button" class="btn btn-primary" id="addCourse">Add</button> 
+          </span>
+        </div>
+
+        <br>
+        <div>
           <!-- Dont change the indentation of this table, function removeCourse does not like whitespace -->
           <table id="coursesTable">
             <tr>
@@ -115,10 +128,9 @@
             </tr>
           </table>
         </div>
-        <span style="display:table;margin:0 auto" class="text-muted">Developed by two engineering students who dont like trimesters.</span>
-        <br>
+      </div>
     </div>
-      
+
     <!--  ================================================== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -148,4 +160,3 @@
 
   </body>
 </html>
-
