@@ -25,10 +25,9 @@
       <h1 class="text-center mt-3 mb-4" id="title">joebangles</h1>
 
       <div class="container">
-      <form id="theform">
 
         <div class="form-group">
-          <label for="specialisationTF">Specialisation</label>
+          <label for="specialisationTF">1. Add your specialisations (majors) (Use the UNSW Handbook to find your specialisation code)</label>
 
           <div class="input-group mb-3">
 
@@ -43,41 +42,15 @@
             </div>
           </div>
         </div>
-      </form>
-
-      <form class="form-inline">
-        <label class="mr-sm-2" for="year">Year</label>
-          <select class="custom-select mb-2 mr-sm-2 mb-sm-0 col" id="year">
-            <option value="1">1st</option>
-            <option value="2">2nd</option>
-            <option value="3">3rd</option>
-            <option value="4">4th</option>
-            <option value="4">5th</option>
-            <option value="4">6th</option>
-          </select>
-
-        &emsp;&emsp;
-
-        <label class="mr-sm-2" for="year">Trimester</label>
-          <select class="custom-select mb-2 mr-sm-2 mb-sm-0 col" id="trimester">
-            <option value="1">1st</option>
-            <option value="2">2nd</option>
-            <option value="3">3rd</option>
-          </select>
-
-        &emsp;&emsp;
-
-        <input type="submit" name="next" value="Next" class="btn btn-success col">  
-      </form>
       </div>
     </div>
 
     <!-- Step 2 -->
 
-    <div class="background" style="background-color:#A4EAFF">
+    <div class="background" style="background-color:#A4EAFF;min-height: 300px;">
       <div class="container">
 
-        <span class="text-muted">Below, select the courses you have already completed.</span>
+        <span>2. Below, select the courses you have already completed.</span>
         <br><br>
 
         <div class="row">
@@ -87,20 +60,20 @@
           </div>
           <!-- style="height:500px;overflow:auto;" -->
           <div class="col">
-            <h2 id="degreeCoursesTitle">Add a Specialisation</h2>
-            <div class="accordian" id="degreeCourses"></div>
+            <h2 id="specDisplayTitle">Add a Specialisation</h2>
+            <div class="accordian" id="specDisplay"></div>
           </div>
         </div>
-
-        <br>
-        <span class="text-muted">Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
       </div>
     </div>
 
     <!-- Step 3 -->
 
     <div class="background" style="background-color:#7EE2FF;">
-      <div class="container">
+      <div class="container" style="min-height: 500px;">
+
+        <span>3. Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
+        <br><br>
 
         <label for="courseTF">Course</label>
         <div class="input-group" data-toggle="tooltip" data-placement="top">
