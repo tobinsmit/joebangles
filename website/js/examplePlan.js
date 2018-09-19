@@ -106,7 +106,20 @@ addPlanArr = function(planArr) {
 	}
 }
 
+addPlanSplitObj = function(data) {
+	console.log("addPlanSplitObj", data);
+	for (let courseid in data.completedCourses) {
+		data.completedCourses[courseid].courseid = courseid.replace(/'/g,'');
+		addCourse(data.completedCourses[courseid], '#completed');
+	}
+	for (let courseid in data.plannedCourses) {
+		data.plannedCourses[courseid].courseid = courseid.replace(/'/g,'');
+		addCourse(data.plannedCourses[courseid], '#unassigned');
+	}
+}
+
 addCourse = function(course, location) {
+
 	html = 
 			'<div id="' + course.courseid + '" class="draggable course" data-toggle="tooltip" data-html="true"'
 			+(course.availableTerms ? ' data-available-terms="[' + course.availableTerms + ']"' : '')
@@ -197,7 +210,7 @@ examplePlanArr = [
 	}
 ]
 
-addPlanArr(examplePlanArr)
+// addPlanArr(examplePlanArr)
 
 
 examplePlanObj = {
