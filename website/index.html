@@ -17,42 +17,114 @@
   </head>
 
   <body>
-    <div class="container">
-      <h1 class="text-center mt-5 mb-3" id="title">joebangles</h1>
 
+    <!-- Step 1 -->
+
+    <div class="background" style="background-color:#3596B2;">
+
+      <h1 class="text-center mt-3 mb-4" id="title">joebangles</h1>
+
+      <div class="container">
       <form id="theform">
-        <a href="draganddroptest.html">Drag and Drop Test Page!</a><br><br>
+
         <div class="form-group">
-          <label for="specialisation">Specialisation</label>
+          <label for="specialisationTF">Specialisation</label>
+
           <div class="input-group mb-3">
+
             <div class="input-group-prepend">
               <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/</span>
             </div>
-            <input type="text" class="form-control" id="specialisation" placeholder="MTRNAH" required="" value="MTRNAH">
-          </div>
-          <div id="specProgressBanner" class="text-center">
-          </div>
-        </div>
-        <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="HMU">HMU</button>
 
-        <div class="form-group">
-          <label for="course">Course</label>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/courses/2019/</span>
+            <input type="text" class="form-control" id="specialisationTF" placeholder="MECHAH" required="" value="MECHAH">
+
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" id="addSpec">Add</button>
             </div>
-            <input type="text" class="form-control" id="course" placeholder="MMAN1300" required="" value="MMAN1300">
-          </div>
-          <div id="courseProgressBanner" class="text-center">
           </div>
         </div>
-        <button class="btn btn-outline-primary btn-lg btn-block w-50 my-4 mx-auto" type="button" id="tester">scrape to db</button>
       </form>
 
-      <div id="degreeCourses"></div>
+      <form class="form-inline">
+        <label class="mr-sm-2" for="year">Year</label>
+          <select class="custom-select mb-2 mr-sm-2 mb-sm-0 col" id="year">
+            <option value="1">1st</option>
+            <option value="2">2nd</option>
+            <option value="3">3rd</option>
+            <option value="4">4th</option>
+            <option value="4">5th</option>
+            <option value="4">6th</option>
+          </select>
+
+        &emsp;&emsp;
+
+        <label class="mr-sm-2" for="year">Trimester</label>
+          <select class="custom-select mb-2 mr-sm-2 mb-sm-0 col" id="trimester">
+            <option value="1">1st</option>
+            <option value="2">2nd</option>
+            <option value="3">3rd</option>
+          </select>
+
+        &emsp;&emsp;
+
+        <input type="submit" name="next" value="Next" class="btn btn-success col">  
+      </form>
+      </div>
     </div>
-      
-      
+
+    <!-- Step 2 -->
+
+    <div class="background" style="background-color:#A4EAFF">
+      <div class="container">
+
+        <span class="text-muted">Below, select the courses you have already completed.</span>
+        <br><br>
+
+        <div class="row">
+          <div class="col-3">
+            <!-- This table has to be on one line, function removeSpec does not like whitespace -->
+            <table  id="specialisationsTable"><tr><td><b>Specialisations</b></td></tr></table>
+          </div>
+          <!-- style="height:500px;overflow:auto;" -->
+          <div class="col">
+            <h2 id="degreeCoursesTitle">Add a Specialisation</h2>
+            <div class="accordian" id="degreeCourses"></div>
+          </div>
+        </div>
+
+        <br>
+        <span class="text-muted">Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+
+    <div class="background" style="background-color:#7EE2FF;">
+      <div class="container">
+
+        <label for="courseTF">Course</label>
+        <div class="input-group" data-toggle="tooltip" data-placement="top">
+          <input id="courseAddInput" type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
+          <span class="input-group-append">
+            <button type="button" class="btn btn-primary" id="addCourse">Add</button> 
+          </span>
+        </div>
+
+        <br>
+        <div>
+          <!-- Dont change the indentation of this table, function removeCourse does not like whitespace -->
+          <table id="coursesTable">
+            <tr>
+              <td style="width:30px;"></td>
+              <td style="width:30px;"></td>
+              <td style="width:100px;"><b>Course</b></td>
+              <td><b>Name</b></td>
+              <td style="width:165px;"><b>2019 Terms</b></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <!--  ================================================== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -67,6 +139,19 @@
     <script src="js/scrapeCourse.js"></script>
     <script src="js/getAllCourses.js"></script>
 
+        <script>
+          var input = $(".typeahead");
+          input.typeahead({
+            autoSelect: true,
+            showCategoryHeader: true,
+            // highlighter: true,
+            minLength: 0,
+            showHintOnFocus: true,
+            fitToElement: true
+          });
+    // using https://github.com/bassjobsen/Bootstrap-3-Typeahead
+    // try https://twitter.github.io/typeahead.js/examples/
+    </script>
+
   </body>
 </html>
-

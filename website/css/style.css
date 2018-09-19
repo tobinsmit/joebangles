@@ -1,4 +1,50 @@
-.container {
-  max-width: 800px;
+html {
+	background-color: #7EE2FF;
 }
 
+.container {
+  max-width: 1000px;
+}
+
+.background {
+	width:100%;
+	padding-top:25px;
+	padding-bottom:25px;
+}
+
+.internal-link {
+	cursor: pointer;
+}
+
+.internal-link:hover {
+	color:#888;
+}
+
+#specialisationTF {
+	text-transform: uppercase;
+}
+
+.degreeCoursesTable {
+	width:100%;
+	table-layout:fixed;
+}
+
+#degreeCoursesTitle {
+	text-align: center;
+}
+
+.degreeCourses-nameTF {
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis
+}
+
+.term-btn:hover {
+	background-color: #bbb;
+	color: #fff;
+	/*6c757d*/
+}
+
+#coursesTable {
+	width: 100%;
+}
