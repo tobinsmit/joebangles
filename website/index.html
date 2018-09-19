@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/examplePlan.css" rel="stylesheet">
 
   </head>
 
@@ -126,6 +127,107 @@
       </div>
     </div>
 
+    <!-- Step 4 -->
+
+    <div class="background" style="background-color:#3596B2;">
+      <div class="container text-center pt-3">
+        <!-- Top row of containers  -->
+        <div class="card">
+          <div class="card-header">
+            <h6 class="m-0">Completed</h6>
+          </div>
+          <div class="card-body">
+            <div id="completed" class="row mx-0 notInvalid draggable-container">
+            </div>
+          </div>
+        </div>
+
+        <br>
+
+        <br>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="card">
+              <div class="card-header">
+                Unassigned
+              </div>
+              <div id="unassigned" class="card-body notInvalid draggable-container">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="card">
+              <table class="table mb-0" style="table-layout: fixed;">
+                <thead>
+                  <tr class="">
+                    <th scope="col" style="width: 16%;">Year</th>
+                    <th scope="col" style="width: 28%;">Term 1</th>
+                    <th scope="col" style="width: 28%;">Term 2</th>
+                    <th scope="col" style="width: 28%;">Term 3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="year" data-year="1">
+                    <th scope="row">1</th>
+                    <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
+                    <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
+                    <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+                  </tr>
+                  <tr class="year" data-year="2">
+                    <th scope="row">2</th>
+                    <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
+                    <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
+                    <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+                  </tr>
+                  <tr class="year" data-year="3">
+                    <th scope="row">3</th>
+                    <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
+                    <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
+                    <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col">Year</div>
+                <div class="col">Term 1</div>
+                <div class="col">Term 2</div>
+                <div class="col">Term 3</div>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="row m-0 year" data-year="1">
+                <div class="col d-flexalign-items-center p-0"><p>1</p></div>
+                <div class="col p-0 draggable-container term" data-term="1"></div>
+                <div class="col p-0 draggable-container term" data-term="2"></div>
+                <div class="col p-0 draggable-container term" data-term="3"></div>
+              </div>
+              <div class="row m-0 year" data-year="1">
+                <div class="col p-0">1</div>
+                <div class="col p-0 draggable-container term" data-term="1"></div>
+                <div class="col p-0 draggable-container term" data-term="2"></div>
+                <div class="col p-0 draggable-container term" data-term="3"></div>
+              </div>
+              <div class="row m-0 year" data-year="1">
+                <div class="col p-0">1</div>
+                <div class="col p-0 draggable-container term" data-term="1"></div>
+                <div class="col p-0 draggable-container term" data-term="2"></div>
+                <div class="col p-0 draggable-container term" data-term="3"></div>
+              </div>
+            </div>
+        </div> -->
+
+        <!--  ================================================== -->
+      </div>
+    </div>
+
+
     <!--  ================================================== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -134,24 +236,33 @@
     <!-- <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script> -->
     <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js'></script>
     <script src="js/script.js"></script>
     <script src="js/scrapeDegree.js"></script>
     <script src="js/scrapeCourse.js"></script>
     <script src="js/getAllCourses.js"></script>
+    <script src="js/examplePlan.js"></script>
 
-        <script>
-          var input = $(".typeahead");
-          input.typeahead({
-            autoSelect: true,
-            showCategoryHeader: true,
-            // highlighter: true,
-            minLength: 0,
-            showHintOnFocus: true,
-            fitToElement: true
-          });
-    // using https://github.com/bassjobsen/Bootstrap-3-Typeahead
-    // try https://twitter.github.io/typeahead.js/examples/
+    <script>
+      var input = $(".typeahead");
+      input.typeahead({
+        autoSelect: true,
+        showCategoryHeader: true,
+        // highlighter: true,
+        minLength: 0,
+        showHintOnFocus: true,
+        fitToElement: true
+      });
+      // using https://github.com/bassjobsen/Bootstrap-3-Typeahead
+      // try https://twitter.github.io/typeahead.js/examples/
     </script>
+
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
+
 
   </body>
 </html>
