@@ -54,6 +54,22 @@ var listener = function(e) {
 }
 document.addEventListener('touchmove', listener, { passive:false });
 
+readDragDrop = function () {
+  $('.course').each( function() {
+    if ($(this).parent().hasClass('term')) {
+      userData.courses[$(this).attr('id')].state = 'planned';
+      userData.courses[$(this).attr('id')].chosenTerm = $(this).parent().data('term');
+      userData.courses[$(this).attr('id')].chosenYear = $(this).parent().parent().data('term');
+    } else if ($(this).parent().attr('id') === 'completed') {
+      userData.courses[$(this).attr('id')].state = 'completed';
+    } else if ($(this).parent().attr('id') === 'unassigned') {
+      userData.courses[$(this).attr('id')].state = 'planned';      
+    } else {
+      console.error("DropDrop readDragDrop: Unexpected location for course");
+    }
+  });
+}
+
 
 checkIfValid = function(el, target) {
 	// Accept unnasigned
