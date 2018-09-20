@@ -42,7 +42,7 @@ drake.on('dragend', function(el){
 // el was dropped into target before a sibling element, and originally came from source
 drake.on('drop', function(el, target, source, sibling){
     // Update el's selected term and year
-    $('.term').removeClass('term-option');
+
 });
 
 

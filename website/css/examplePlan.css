@@ -16,6 +16,7 @@
 .course {
   /*min-height: 100px;*/
   /*max-width: 100px;*/
+  font-size: 12pt;
   padding-left: 8px;
   padding-right: 8px;
   cursor: pointer;
