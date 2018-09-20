@@ -7,6 +7,9 @@ var drake = dragula({
     }
 });
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 var scrollable = true;
 
 // el was lifted from source
@@ -139,6 +142,12 @@ clearDragDrop = function() {
 	$('.course').remove();
 }
 
+reactivateTooltips = function() {
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+}
+
 loadDragDropPlanArr = function(planArr) {
 	clearDragDrop();
 	console.log("loadDragDropPlanArr", data);
@@ -178,6 +187,7 @@ loadDragDropWithState = function(data) {
 			// Don't add
 		}
 	}
+	reactivateTooltips();
 }
 
 addCourse = function(course, location) {
