@@ -42,7 +42,6 @@ drake.on('dragend', function(el){
 
   // Update el's selected term and year
   updateCourseData(el);
-  reprintData();
     
 });
 
@@ -88,10 +87,6 @@ updateCourseData = function(el) {
     console.error("DropDrop readDragDrop: Unexpected location for course", el);
   }
 }
-reprintData = function () {
-	$('#data').text(JSON.stringify(userData, null, 2));
-}
-
 
 checkIfValid = function(el, target) {
 	// Accept unassigned
