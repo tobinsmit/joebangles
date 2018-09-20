@@ -7,9 +7,7 @@ var drake = dragula({
     }
 });
 
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+reactivateTooltips();
 var scrollable = true;
 
 // el was lifted from source
