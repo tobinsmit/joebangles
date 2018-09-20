@@ -26,21 +26,116 @@ $input.typeahead({
 });
 db.doc("other/commonInfo").onSnapshot(doc => {
 	if (doc.exists) {
-		console.log("Course list doc found");
+		//console.log("Course list doc found");
 		$input.data('typeahead').source = doc.data().courseList;
 	} else {
 		console.log("Course list doc NOT found");
 	}
 })
+ 
+/*
+	Cookie functions
+*/
 
-db.doc("other/commonInfo").onSnapshot(doc => {
-	if (doc.exists) {
-		console.log("Course list doc found");
-		input.data('typeahead').source = doc.data().courseList;
-	} else {
-		console.log("Course list doc NOT found");
+//Writes current data to cookie
+writeCookie = function(){
+	console.log("writeCookie");
+	document.cookie = 'joebanglesJSON='+ saveStateToJSONString() + 
+					';expires=Fri, 31 Dec 2030 23:59:59 GMT;path=/';
+	// document.cookie = "joebanglesJSON=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+};
+
+// Exports state to a json object
+saveStateToJSONString = function() {
+	temp_obj = removeEmpty(removeIgnored(userData));
+	console.log(temp_obj)
+	string = JSON.stringify(temp_obj);
+	console.log("saveStateToJSON");
+	console.log(string);
+	return string
+}
+
+// Turns objects with state : 'ignored' to null
+function removeIgnored(obj) {
+  const o = JSON.parse(JSON.stringify(obj)); // Clone source oect.
+
+  Object.keys(o).forEach(key => {
+    if (o[key] && typeof o[key] === 'object') {
+      o[key] = removeIgnored(o[key]);  // Recurse
+    }
+  });
+
+  if (o.state && o.state === 'ignored') {
+  	return
+  }
+
+  return o; // Return new object.
+}
+
+// Removes null and undeifned values in nested objects
+removeEmpty = function(obj){
+  const o = JSON.parse(JSON.stringify(obj)); // Clone source oect.
+
+  Object.keys(o).forEach(key => {
+    if (o[key] && typeof o[key] === 'object')
+      o[key] = removeEmpty(o[key]);  // Recurse.
+    else if (o[key] === undefined || o[key] === null)
+      delete o[key]; // Delete undefined and null.
+    else
+      o[key] = o[key];  // Copy value.
+  });
+
+  return o; // Return new object.
+};
+
+//Reads subject data from cookie
+readCookie = function(){
+	console.log("readCookie");
+	console.log("All cookies:", document.cookie);
+	let cookieData = document.cookie.split(';');
+	for (let i in cookieData) {
+		thisCookie = cookieData[i];
+		console.log("This cookie", thisCookie)
+		if (thisCookie.match(/joebanglesJSON=/)) {
+			thisCookie = thisCookie.replace('joebanglesJSON=', ''); // Remove name
+			thisCookie = thisCookie.replace(/;.*/g,'');
+			thisCookie = JSON.parse(thisCookie);
+			console.log("This cookie data:",thisCookie);
+			loadUIFromJSON(thisCookie);
+		} else {
+			console.log('not match');
+		}
 	}
+};
+
+// Loads state from a json object
+loadUIFromJSON = function(data) {
+	console.log("loadUIFromJSON", data)
+	userData = data;
+
+	// Load specs for specTable
+
+	// Load special courses
+
+	// Load courses to DragDrop
+	loadDragDropWithState(userData.courses)
+}
+
+refresh = function() {
+	writeCookie();
+	readCookie();
+}
+
+// Load cookie when page is ready
+$(document).ready(function(){
+	readCookie();
 });
+
+//Save cookie on page unload
+$(window).on('unload', function() {
+	writeCookie();
+});
+
 
 /*
  * Adding functions
@@ -70,7 +165,7 @@ function loadSpec(specID){
 		// Add a row to the 'Specialisations Added' Table
 		$('#specialisationsTable').append(
 		'<tr><td><span onclick="loadSpec(&#39'+specID+'&#39)" class="internal-link">'+specID+'</span></td>'+
-		'<td><span class="fa fa-times" style="cursor:pointer" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
+		'<td><span class="fa fa-times icon" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
 
 		fillSpecDisplay(specID);
 
@@ -122,9 +217,27 @@ $('#addCourse').on('click', function() {
 	
 });
 
+function dragDropAddRow() {
+	year = $('.year').length + 1;
+	$('#dragDropTable tbody').append(
+    '<tr class="year" data-year="' + year + '">'+
+      '<th scope="row">' + year + '</th>'+
+      '<td class="p-0"><div id="year' + year + 'term1" class="draggable-container term" data-term="1"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term2" class="draggable-container term" data-term="2"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term3" class="draggable-container term" data-term="3"></div></td>'+
+    '</tr>'
+	);
+}
+
+function dragDropRemoveRow() {
+	$('.year').last().find('.course').each( function() {
+		$(this).prependTo('#unassigned');
+	})
+	$('.year').last().remove();
+}
+
 // Loads (but does NOT display) a given courseID
 function loadCourse(courseID, callSetTerms){
-
 	db.doc("courses/" + courseID).onSnapshot(doc => {
 		if (doc.exists) {
 
@@ -135,7 +248,7 @@ function loadCourse(courseID, callSetTerms){
 												chosenTerm : null,
 												chosenYear : null,
 												prereq : null,
-												state : "planned",
+												state : "ignored",
 
 													};
 
@@ -148,6 +261,8 @@ function loadCourse(courseID, callSetTerms){
 
 				userData.courses["'"+courseID+"'"].prereq = doc.data().prereqs[0].exp;
 			}
+
+			setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state);
 
 			if(callSetTerms){
 				setTerms(courseID);
@@ -191,6 +306,42 @@ function setTerms(courseID){
 		$('#'+courseID+'_'+terms[j]).addClass('active');
 	}
 
+}
+
+$(document).on('click', '.icon', function(){
+
+	if($(this).hasClass("fa-check")){
+		setStatusIcon($(this).attr('id').substring(0,8), "completed");
+		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "completed";
+	} else if($(this).hasClass("fa-calendar-alt")){
+		setStatusIcon($(this).attr('id').substring(0,8), "planned");
+		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "planned";
+	} else if($(this).hasClass("fa-ban")){
+		setStatusIcon($(this).attr('id').substring(0,8), "ignored");
+		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "ignored";
+	}
+
+});
+
+function setStatusIcon(courseID, faClass){
+
+	var p = $('#'+courseID+'_p');
+	var c = $('#'+courseID+'_c');
+	var i = $('#'+courseID+'_i');
+
+	if(faClass == "completed" && !c.hasClass("check-active")){
+		p.removeClass("calendar-active");
+		c.addClass("check-active");
+		i.removeClass("ban-active");
+	} else if(faClass == "planned" && !p.hasClass("calendar-active")){
+		p.addClass("calendar-active");
+		c.removeClass("check-active");
+		i.removeClass("ban-active");
+	} else if(faClass == "ignored" && !i.hasClass("ban-active")){
+		p.removeClass("calendar-active");
+		c.removeClass("check-active");
+		i.addClass("ban-active");
+	}
 }
 
 // Course CHECKBOX select/deselect
@@ -344,9 +495,8 @@ function fillSpecDisplay(specID) {
 				el_row = document.createElement('tr');
 				el_row.innerHTML = 
 					'<table class="degreeCoursesTable"><tr>'+
-		 				'<td style="width:20px;"></td>'+
-         		   		'<td style="width:100px;"><b>Course</b></td>'+
-         		   		'<td><b>Name</b></td>'+
+         		   		'<td style="width:80px;"></td>'+
+         		   		'<td><b>Course</b></td>'+
            			 	'<td style="width:165px;"><b>2019 Terms</b></td>'+
 					'</tr>';
 				el_table.appendChild(el_row);
@@ -355,21 +505,14 @@ function fillSpecDisplay(specID) {
 				for (courseid in levelObj.compulsory) {
 					courseObj = levelObj.compulsory[courseid];
 
-					var checkbox = '<td><input id="'+courseid+'" type="checkbox"></td>'
-
-					if (typeof userData.courses["'"+courseid+"'"] === 'undefined'){
-						loadCourse(courseid, true);
-					} else {
-						if (userData.courses["'"+courseid+"'"].status == "completed"){
-							checkbox = '<td><input checked id="'+courseid+'" type="checkbox"></td>'
-						}
-					}
-
 					el_row = document.createElement('tr');
 					el_row.innerHTML =
-						checkbox+
-						'<td>'+courseid+'</td>'+
-						'<td class="degreeCourses-nameTF">'+courseObj.longname+'</td>'+
+						'<td>'+
+							'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
+           					'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+          					'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+						'</td>'+
+						'<td class="degreeCourses-nameTF">'+courseid+' - '+courseObj.longname+'</td>'+
 						'<td>'+
 							'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
 								'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
@@ -380,7 +523,10 @@ function fillSpecDisplay(specID) {
 						'</td>';
 					el_table.appendChild(el_row);
 
-					if (typeof userData.courses["'"+courseid+"'"] !== 'undefined'){
+					if (typeof userData.courses["'"+courseid+"'"] === 'undefined'){
+						loadCourse(courseid, true);
+					} else {
+						setStatusIcon(courseid, userData.courses["'"+courseid+"'"].state);
 						setTerms(courseid);
 					}
 
@@ -392,7 +538,6 @@ function fillSpecDisplay(specID) {
 
 					el_row = document.createElement('tr');
 					el_row.innerHTML =
-						'<td></td>'+
 						'<td></td>'+
 						'<td style="padding-top:15px;"><b style="color:#666;">Choose one of the following:</b></td>';
 					el_table.appendChild(el_row);
@@ -413,9 +558,13 @@ function fillSpecDisplay(specID) {
 
     					el_row = document.createElement('tr');
 						el_row.innerHTML =
-							radio+
-							'<td>'+courseid+'</td>'+
-							'<td class="degreeCourses-nameTF">'+courseObj.longname+'</td>'+
+							//radio+
+							'<td>'+
+								'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
+           						'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+          						'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+							'</td>'+
+							'<td class="degreeCourses-nameTF">'+courseid+' - '+courseObj.longname+'</td>'+
 							'<td>'+
 								'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
 									'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
@@ -429,6 +578,8 @@ function fillSpecDisplay(specID) {
 						if (typeof userData.courses["'"+courseid+"'"] !== 'undefined'){
 							setTerms(courseid);
 						}
+
+						setStatusIcon(courseid, "fa-calendar-alt");
 
     				}
 				}

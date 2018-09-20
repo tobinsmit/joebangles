@@ -83,16 +83,15 @@ function scrapeCourse(courseid) {
 
 };
 
-
 function cleanPrereqExp(exp) {
   console.log('cleanPrereqExp input:',exp)
   exp = exp.replace(/[pP]re[-]?[rR]eq(uisite)?[s]?[:;]/g, '')  // clear prereq label
   exp = exp.replace(/[:;].*/g, '')                             // clear anything after another : or ;
-  exp = exp.replace(/CR[^A-Z]/g,'')                            // clear /CR/ (eg MATH1231)
+  exp = exp.replace(/CR[^a-zA-Z]/g,'')                            // clear /CR/ (eg MATH1231)
   exp = exp.replace(/[oO][rR]/g,'+')                           // or -> +
   exp = exp.replace(/[aA][nN][dD]/g,'*')                       // and -> *
-  exp = exp.replace(/[^\(\)\+\* A-Z0-9]/g,'')                  // clear everything but (, ), +, *, space, cap letters, digits
-  exp = exp.replace(/[A-Z](?![A-Z]*[0-9]{2})/g,'')             // clear cap letters that arent followed by 4 digits
+  exp = exp.replace(/[^\(\)\+\* a-zA-Z0-9]/g,'')                  // clear everything but (, ), +, *, space, cap letters, digits
+  exp = exp.replace(/[a-zA-Z](?![a-zA-Z]{0,3}[0-9]{2})/g,'')             // clear cap letters that arent followed by 4 digits
   exp = exp.replace(/[^0-9][0-9]{1,3}(?![0-9])/g,'')           // clear 1-3 digits numbers
   exp = exp.replace(/[^0-9][0-9]{5,}(?![0-9])/g,'')            // clear >=5 digits numbers
   // exp = exp.replace(/[^A-Z][0-9]{4}/g,'')                   // clear 4 digits numbers that dont have 4 letters before
