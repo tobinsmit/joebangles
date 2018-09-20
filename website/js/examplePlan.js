@@ -71,7 +71,6 @@ updateCourseData = function(el) {
     userData.courses[badcourseid].state = 'planned';
     userData.courses[badcourseid].chosenTerm = $(el).parent().data('term');
     userData.courses[badcourseid].chosenYear = $(el).parent().parent().parent().data('year');
-    console.log($(el).parent().parent().parent().data('year'), $(el).parent().parent().parent())
   } else if ($(el).parent().attr('id') === 'completed') {
   	// In completed
     userData.courses[badcourseid].state = 'completed';
@@ -136,14 +135,21 @@ checkIfValid = function(el, target) {
 	return true
 }
 
-addPlanArr = function(planArr) {
+clearDragDrop = function() {
+	$('.course').remove();
+}
+
+loadDragDropPlanArr = function(planArr) {
+	clearDragDrop();
+	console.log("loadDragDropPlanArr", data);
 	for (let i_course in planArr) {
 		addCourse(planArr[i_course], '#completed');
 	}
 }
 
-addPlanSplitObj = function(data) {
-	console.log("addPlanSplitObj", data);
+loadDragDropSplitObj = function(data) {
+	clearDragDrop();
+	console.log("loadDragDropSplitObj", data);
 	for (let courseid in data.completedCourses) {
 		data.completedCourses[courseid].courseid = courseid.replace(/'/g,'');
 		addCourse(data.completedCourses[courseid], '#completed');
@@ -154,8 +160,9 @@ addPlanSplitObj = function(data) {
 	}
 }
 
-addPlanStateObj = function(data) {
-	console.log("addPlanStateObj", data);
+loadDragDropWithState = function(data) {
+	clearDragDrop();
+	console.log("loadDragDropWithState", data);
 	for (let courseid in data) {
 		data[courseid].courseid = courseid.replace(/'/g,'');
 
@@ -265,7 +272,7 @@ examplePlanArr = [
 	}
 ]
 
-// addPlanArr(examplePlanArr)
+// loadPlanArr(examplePlanArr)
 
 
 examplePlanObj = {
