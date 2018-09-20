@@ -133,19 +133,17 @@
       <div class="container text-center pt-3">
         <!-- Top row of containers  -->
         <button class="btn btn-warning" onclick="addPlanSplitObj(planData)">GO</button>
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-header">
-            <h6 class="m-0">Completed</h6>
+            Completed
           </div>
           <div class="card-body">
             <div id="completed" class="row mx-0 notInvalid draggable-container">
             </div>
           </div>
         </div>
-        <br>
-        <br>
         <div class="row">
-          <div class="col-sm-3">
+          <div class="col-sm-3 mb-3">
             <div class="card">
               <div class="card-header">
                 Unassigned
@@ -156,7 +154,7 @@
           </div>
           <div class="col-sm-9">
             <div class="card">
-              <table class="table mb-0" style="table-layout: fixed;">
+              <table id="dragDropTable" class="table mb-0" style="table-layout: fixed;">
                 <thead>
                   <tr class="">
                     <th scope="col" style="width: 16%;">Year</th>
@@ -186,6 +184,10 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div class="d-flex flex-row-reverse mt-2">
+              <button class="btn btn-primary ml-2 float-right" onclick="dragDropAddRow()">Add 1 row</button>
+              <button class="btn btn-danger ml-2 float-right" onclick="dragDropRemoveRow()">Remove last row</button>
             </div>
           </div>
         </div>

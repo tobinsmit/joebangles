@@ -106,6 +106,25 @@ $('#addCourse').on('click', function() {
 	
 });
 
+function dragDropAddRow() {
+	year = $('.year').length + 1;
+	$('#dragDropTable tbody').append(
+    '<tr class="year" data-year="' + year + '">'+
+      '<th scope="row">' + year + '</th>'+
+      '<td class="p-0"><div class="draggable-container term" data-term="1"></div></td>'+
+      '<td class="p-0"><div class="draggable-container term" data-term="2"></div></td>'+
+      '<td class="p-0"><div class="draggable-container term" data-term="3"></div></td>'+
+    '</tr>'
+	);
+}
+
+function dragDropRemoveRow() {
+	$('.year').last().find('.course').each( function() {
+		$(this).prependTo('#unassigned');
+	})
+	$('.year').last().remove();
+}
+
 // Loads a given specID
 function retrieveSpec(specID){
 
