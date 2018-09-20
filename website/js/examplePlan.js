@@ -72,7 +72,7 @@ readDragDrop = function () {
 
 
 checkIfValid = function(el, target) {
-	// Accept unnasigned
+	// Accept unassigned
 	if ($(target).hasClass('notInvalid')){
 		return true
 	}
@@ -131,6 +131,21 @@ addPlanSplitObj = function(data) {
 	for (let courseid in data.plannedCourses) {
 		data.plannedCourses[courseid].courseid = courseid.replace(/'/g,'');
 		addCourse(data.plannedCourses[courseid], '#unassigned');
+	}
+}
+
+addPlanStateObj = function(data) {
+	console.log("addPlanStateObj", data);
+	for (let courseid in data) {
+		data[courseid].courseid = courseid.replace(/'/g,'');
+
+		if (data[courseid].state === "completed") {
+			addCourse(data[courseid], '#completed');
+		} else if (data[courseid].state === "planned") {
+			addCourse(data[courseid], '#unassigned');
+		} else {
+			// Don't add
+		}
 	}
 }
 
