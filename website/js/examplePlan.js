@@ -36,12 +36,15 @@ drake.on('dragend', function(el){
 			$(this).addClass('course-invalid');
 		}
 	})
+
+  // Update el's selected term and year
+  updateCourseData(el);
+  reprintData();
     
 });
 
 // el was dropped into target before a sibling element, and originally came from source
 drake.on('drop', function(el, target, source, sibling){
-    // Update el's selected term and year
 
 });
 
@@ -56,18 +59,35 @@ document.addEventListener('touchmove', listener, { passive:false });
 
 readDragDrop = function () {
   $('.course').each( function() {
-    if ($(this).parent().hasClass('term')) {
-      userData.courses[$(this).attr('id')].state = 'planned';
-      userData.courses[$(this).attr('id')].chosenTerm = $(this).parent().data('term');
-      userData.courses[$(this).attr('id')].chosenYear = $(this).parent().parent().data('term');
-    } else if ($(this).parent().attr('id') === 'completed') {
-      userData.courses[$(this).attr('id')].state = 'completed';
-    } else if ($(this).parent().attr('id') === 'unassigned') {
-      userData.courses[$(this).attr('id')].state = 'planned';      
-    } else {
-      console.error("DropDrop readDragDrop: Unexpected location for course");
-    }
+    updateCourseData(this);
   });
+}
+updateCourseData = function(el) {
+	let courseid = $(el).attr('id');
+	let badcourseid = "'" + courseid + "'";
+	console.log("updateCourseData: " + courseid);
+  if ($(el).parent().hasClass('term')) {
+  	// In term
+    userData.courses[badcourseid].state = 'planned';
+    userData.courses[badcourseid].chosenTerm = $(el).parent().data('term');
+    userData.courses[badcourseid].chosenYear = $(el).parent().parent().parent().data('year');
+    console.log($(el).parent().parent().parent().data('year'), $(el).parent().parent().parent())
+  } else if ($(el).parent().attr('id') === 'completed') {
+  	// In completed
+    userData.courses[badcourseid].state = 'completed';
+    userData.courses[badcourseid].chosenTerm = null;
+    userData.courses[badcourseid].chosenYear = null;
+  } else if ($(el).parent().attr('id') === 'unassigned') {
+  	// In unassigned
+    userData.courses[badcourseid].state = 'planned';      
+    userData.courses[badcourseid].chosenTerm = null;
+    userData.courses[badcourseid].chosenYear = null;
+  } else {
+    console.error("DropDrop readDragDrop: Unexpected location for course", el);
+  }
+}
+reprintData = function () {
+	$('#data').text(JSON.stringify(userData, null, 2));
 }
 
 
@@ -142,7 +162,11 @@ addPlanStateObj = function(data) {
 		if (data[courseid].state === "completed") {
 			addCourse(data[courseid], '#completed');
 		} else if (data[courseid].state === "planned") {
-			addCourse(data[courseid], '#unassigned');
+			if (data[courseid].chosenTerm && data[courseid].chosenYear) {
+				addCourse(data[courseid], '#year' + data[courseid].chosenYear + 'term' + data[courseid].chosenTerm);
+			} else {
+				addCourse(data[courseid], '#unassigned');
+			}
 		} else {
 			// Don't add
 		}

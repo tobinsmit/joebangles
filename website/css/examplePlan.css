@@ -1,3 +1,7 @@
+.draggable-container {
+  min-height: 5px;
+}
+
 .year {
   /*min-height: 100px;*/
 }
@@ -37,6 +41,3 @@
   opacity: 0.9;
 }
 
-.box {
-  border:3px solid black; 
-}

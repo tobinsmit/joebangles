@@ -121,7 +121,10 @@
               <div class="card-header">
                 Unassigned
               </div>
-              <div id="unassigned" class="card-body notInvalid draggable-container">
+              <div class="card-body">
+                <div id="unassigned" class="notInvalid draggable-container">
+                  
+                </div>
               </div>
             </div>
           </div>
@@ -139,21 +142,21 @@
                 <tbody>
                   <tr class="year" data-year="1">
                     <th scope="row">1</th>
-                    <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
-                    <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
-                    <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+                    <td class="p-0"><div id="year1term1" class="draggable-container term" data-term="1"></div></td>
+                    <td class="p-0"><div id="year1term2" class="draggable-container term" data-term="2"></div></td>
+                    <td class="p-0"><div id="year1term3" class="draggable-container term" data-term="3"></div></td>
                   </tr>
                   <tr class="year" data-year="2">
                     <th scope="row">2</th>
-                    <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
-                    <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
-                    <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+                    <td class="p-0"><div id="year2term1" class="draggable-container term" data-term="1"></div></td>
+                    <td class="p-0"><div id="year2term2" class="draggable-container term" data-term="2"></div></td>
+                    <td class="p-0"><div id="year2term3" class="draggable-container term" data-term="3"></div></td>
                   </tr>
                   <tr class="year" data-year="3">
                     <th scope="row">3</th>
-                    <td class="p-0"><div class="draggable-container term" data-term="1"></div></td>
-                    <td class="p-0"><div class="draggable-container term" data-term="2"></div></td>
-                    <td class="p-0"><div class="draggable-container term" data-term="3"></div></td>
+                    <td class="p-0"><div id="year3term1" class="draggable-container term" data-term="1"></div></td>
+                    <td class="p-0"><div id="year3term2" class="draggable-container term" data-term="2"></div></td>
+                    <td class="p-0"><div id="year3term3" class="draggable-container term" data-term="3"></div></td>
                   </tr>
                 </tbody>
               </table>
@@ -162,6 +165,7 @@
               <button class="btn btn-primary ml-2 float-right" onclick="dragDropAddRow()">Add 1 row</button>
               <button class="btn btn-danger ml-2 float-right" onclick="dragDropRemoveRow()">Remove last row</button>
             </div>
+            <pre id="data" class="text-left">test</pre>
           </div>
         </div>
 

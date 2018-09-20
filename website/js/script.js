@@ -118,9 +118,9 @@ function dragDropAddRow() {
 	$('#dragDropTable tbody').append(
     '<tr class="year" data-year="' + year + '">'+
       '<th scope="row">' + year + '</th>'+
-      '<td class="p-0"><div class="draggable-container term" data-term="1"></div></td>'+
-      '<td class="p-0"><div class="draggable-container term" data-term="2"></div></td>'+
-      '<td class="p-0"><div class="draggable-container term" data-term="3"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term1" class="draggable-container term" data-term="1"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term2" class="draggable-container term" data-term="2"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term3" class="draggable-container term" data-term="3"></div></td>'+
     '</tr>'
 	);
 }
