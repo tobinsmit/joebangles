@@ -54,10 +54,26 @@ var listener = function(e) {
 }
 document.addEventListener('touchmove', listener, { passive:false });
 
+readDragDrop = function () {
+  $('.course').each( function() {
+    if ($(this).parent().hasClass('term')) {
+      userData.courses[$(this).attr('id')].state = 'planned';
+      userData.courses[$(this).attr('id')].chosenTerm = $(this).parent().data('term');
+      userData.courses[$(this).attr('id')].chosenYear = $(this).parent().parent().data('term');
+    } else if ($(this).parent().attr('id') === 'completed') {
+      userData.courses[$(this).attr('id')].state = 'completed';
+    } else if ($(this).parent().attr('id') === 'unassigned') {
+      userData.courses[$(this).attr('id')].state = 'planned';      
+    } else {
+      console.error("DropDrop readDragDrop: Unexpected location for course");
+    }
+  });
+}
+
 
 checkIfValid = function(el, target) {
 	// Accept unnasigned
-	if ($(target).hasClass('unassigned')){
+	if ($(target).hasClass('notInvalid')){
 		return true
 	}
 
@@ -70,6 +86,9 @@ checkIfValid = function(el, target) {
 	}
 
 	// Check prereq is satisfied
+	$('#completed .course').each( function(i_course, course) {
+		prereq = prereq.replace($(course).attr('id'),"1");
+	});
 	$('.year').each( function(i_year, year) {
 		if ($(year).data('year') < $(target).parent().parent().data('year')) {
 			// Previous year
@@ -88,7 +107,7 @@ checkIfValid = function(el, target) {
 			});
 		}
 	});
-	prereq = prereq.replace(/[A-Z]{4}[0-9]{4}/,"0");
+	prereq = prereq.replace(/[A-Z]{4}[0-9]{4}/g,"0");
 	prereq = eval(prereq)
 	if (!prereq) {
 		return 0
@@ -97,23 +116,120 @@ checkIfValid = function(el, target) {
 	return true
 }
 
-addPlan = function(plan) {
-	for (let courseType in plan) {
-		if (courseType == "completedCourses") {
-			for (let course in plan[courseType]) {
-
-			}
-		} else if (courseType == "plannedCourses") {
-			for (let course in plan[courseType]) {
-			}
-		} else {
-			console.error("joebangles: unexpected course type in plan.", plan);
-		}
+addPlanArr = function(planArr) {
+	for (let i_course in planArr) {
+		addCourse(planArr[i_course], '#completed');
 	}
 }
 
+addPlanSplitObj = function(data) {
+	console.log("addPlanSplitObj", data);
+	for (let courseid in data.completedCourses) {
+		data.completedCourses[courseid].courseid = courseid.replace(/'/g,'');
+		addCourse(data.completedCourses[courseid], '#completed');
+	}
+	for (let courseid in data.plannedCourses) {
+		data.plannedCourses[courseid].courseid = courseid.replace(/'/g,'');
+		addCourse(data.plannedCourses[courseid], '#unassigned');
+	}
+}
 
-examplePlan = {
+addCourse = function(course, location) {
+
+	html = 
+			'<div id="' + course.courseid + '" class="draggable course" data-toggle="tooltip" data-html="true"'
+			+(course.availableTerms ? ' data-available-terms="[' + course.availableTerms + ']"' : '')
+			+(course.prereq ? '" data-prereq="' + course.prereq + '"' : '')
+			+' data-original-title="'
+
+			// Dont show none fields
+			// +(course.availableTerms ? 'Terms: '+ (course.availableTerms + '').replace(/( )?Term( )?/g, '') : '')
+			// +(course.prereq && course.availableTerms ? '<br>' : '')
+			// +(course.prereq ? 'Prereq: '+ (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/, ' and ') : '')
+
+			// Show none fields
+			+'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
+			+'<br>'
+			+'Prereq: ' + (course.prereq ? (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/g, ' and ') : 'none')
+
+			+'">'+ course.courseid +'</div>';
+	
+	$(location).append(html);
+}
+
+examplePlanArr = [
+	{
+	  courseid : "ENGG1000",
+	  availableTerms : [1,2,3],
+		longname : "Engineering Design",
+		completed : true
+	},
+	{
+	  courseid : "MATH1131",
+	  availableTerms : [1,2,3],
+		longname : "Mathematics 1A",
+		completed : true
+	},
+	{
+	  courseid : "MATH1231",
+	  availableTerms : [1,2,3],
+		longname : "Mathematics 1B",
+		prereq : "MATH1131 + MATH1141",
+		completed : true
+	},
+	{
+	  courseid : "PHYS1121",
+		longname : "Physics 1A",
+		availableTerms : ["Summer", "1", "2", "3"],
+		completed : true
+	},
+	{
+	  courseid : "MMAN2100",
+		longname : "Engineering Design 2",
+		availableTerms : [3],
+		// prereq : "ENGG1000",
+		completed : true
+	},
+	{
+	  courseid : "MMAN2300",
+		longname : "Engineering Mechanics 2",
+		availableTerms : ["2"],
+		prereq : "(CVEN1300 + MINE1300 + MMAN1300) * MATH2019 + MATH2018 + MATH2111 * MATH2221 + MATH2011 * MATH2121 + MATH2069 * MATH2121"
+	},
+	{
+	  courseid : "ELEC1111",
+		longname : "Electrical and Telecommunications Engineering",
+		availableTerms : [1,2]
+	},
+	{
+	  courseid : "MATH2019",
+		longname : "Engineering Mathematics 2E",
+		availableTerms : ["1", "3"],
+		prereq : "MATH1231 + MATH1241 + MATH1251"
+	},
+	{
+	  courseid : "MMAN2130",
+		longname : "Design and Manufacturing",
+		availableTerms : ["2", "3"]
+	},
+	{
+	  courseid : "MMAN1300",
+		longname : "Engineering Mechanics",
+		availableTerms : ["Summer", "2", "3"], // Made up
+		prereq : "(MATH1131 + MATH1141) * (PHYS1121 + PHYS1131 + PHYS1141)"
+	},
+	{
+	  courseid : "MMAN2400",
+		longname : "Mechanics of Solids 1",
+		availableTerms : ["1", "2"], // Made up
+		prereq : "(MATH1231 + MATH1241) * (MMAN1300 + CVEN1300 + MINE1300)"
+	}
+]
+
+// addPlanArr(examplePlanArr)
+
+
+examplePlanObj = {
 	completedCourses : {
 		"ENGG1000" : {
 			longname : "Engineering Design"

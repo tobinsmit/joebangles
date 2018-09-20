@@ -114,46 +114,24 @@ $('#addCourse').on('click', function() {
 	
 });
 
-// Course CHECKBOX select/deselect
-$(document).on('change', ':checkbox', function() {
+function dragDropAddRow() {
+	year = $('.year').length + 1;
+	$('#dragDropTable tbody').append(
+    '<tr class="year" data-year="' + year + '">'+
+      '<th scope="row">' + year + '</th>'+
+      '<td class="p-0"><div class="draggable-container term" data-term="1"></div></td>'+
+      '<td class="p-0"><div class="draggable-container term" data-term="2"></div></td>'+
+      '<td class="p-0"><div class="draggable-container term" data-term="3"></div></td>'+
+    '</tr>'
+	);
+}
 
-	var courseID = $(this).attr('id');
-
-    if(this.checked) {
-      
-    	userData.courses["'"+courseID+"'"].status = "completed";
-
-    } else {
-    	
-    	userData.courses["'"+courseID+"'"].status = "planned";
-
-    }
-});
-
-// Course RADIO select/deselect
-$(document).on('click', ':radio', function() {
-
-	var courseID = $(this).attr('id');
-
-	for (var el of $('input[name="'+$(this).attr('name')+'"]')) {
-
-		userData.courses["'"+$(el).attr('id')+"'"].status = "ignored";
-
-	}
-
-	if(this.checked) {
-      
-    	userData.courses["'"+courseID+"'"].status = "completed";
-
-    } else {
-    	
-    	userData.courses["'"+courseID+"'"].status = "planned";
-
-    }
-
-	console.log(userData);
-
-});
+function dragDropRemoveRow() {
+	$('.year').last().find('.course').each( function() {
+		$(this).prependTo('#unassigned');
+	})
+	$('.year').last().remove();
+}
 
 // When the terms are changed
 $(document).on('click', '.term-btn', function(){
@@ -371,23 +349,6 @@ function setStatusIcon(courseID, state){
 
 	}
 }
-
-	// if(p.hasClass(courseID)){
-
-	// 	if(state == "completed" && !c.hasClass("check-active")){
-	// 		p.removeClass("calendar-active");
-	// 		c.addClass("check-active");
-	// 		i.removeClass("ban-active");
-	// 	} else if(state == "planned" && !p.hasClass("calendar-active")){
-	// 		p.addClass("calendar-active");
-	// 		c.removeClass("check-active");
-	// 		i.removeClass("ban-active");
-	// 	} else if(state == "ignored" && !i.hasClass("ban-active")){
-	// 		p.removeClass("calendar-active");
-	// 		c.removeClass("check-active");
-	// 		i.addClass("ban-active");
-	// 	}
-	// }
 
 /*
  * Fill Spec Display
