@@ -48,3 +48,19 @@ html {
 #coursesTable {
 	width: 100%;
 }
+
+.icon {
+	cursor: pointer;
+}
+
+.fa-ban:hover, .ban-active {
+	color:#f00;
+}
+
+.fa-check:hover, .check-active {
+	color:#0f0;
+}
+
+.fa-calendar-alt:hover, .calendar-active {
+	color:#00f;
+}

@@ -26,21 +26,12 @@ $input.typeahead({
 });
 db.doc("other/commonInfo").onSnapshot(doc => {
 	if (doc.exists) {
-		console.log("Course list doc found");
+		//console.log("Course list doc found");
 		$input.data('typeahead').source = doc.data().courseList;
 	} else {
 		console.log("Course list doc NOT found");
 	}
 })
-
-db.doc("other/commonInfo").onSnapshot(doc => {
-	if (doc.exists) {
-		console.log("Course list doc found");
-		input.data('typeahead').source = doc.data().courseList;
-	} else {
-		console.log("Course list doc NOT found");
-	}
-});
 
 /*
  * Adding functions
@@ -70,7 +61,7 @@ function loadSpec(specID){
 		// Add a row to the 'Specialisations Added' Table
 		$('#specialisationsTable').append(
 		'<tr><td><span onclick="loadSpec(&#39'+specID+'&#39)" class="internal-link">'+specID+'</span></td>'+
-		'<td><span class="fa fa-times" style="cursor:pointer" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
+		'<td><span class="fa fa-times icon" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
 
 		fillSpecDisplay(specID);
 
@@ -149,6 +140,8 @@ function loadCourse(courseID, callSetTerms){
 				userData.courses["'"+courseID+"'"].prereq = doc.data().prereqs[0].exp;
 			}
 
+			setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state);
+
 			if(callSetTerms){
 				setTerms(courseID);
 			}
@@ -191,6 +184,42 @@ function setTerms(courseID){
 		$('#'+courseID+'_'+terms[j]).addClass('active');
 	}
 
+}
+
+$(document).on('click', '.icon', function(){
+
+	if($(this).hasClass("fa-check")){
+		setStatusIcon($(this).attr('id').substring(0,8), "completed");
+		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "completed";
+	} else if($(this).hasClass("fa-calendar-alt")){
+		setStatusIcon($(this).attr('id').substring(0,8), "planned");
+		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "planned";
+	} else if($(this).hasClass("fa-ban")){
+		setStatusIcon($(this).attr('id').substring(0,8), "ignored");
+		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "ignored";
+	}
+
+});
+
+function setStatusIcon(courseID, faClass){
+
+	var p = $('#'+courseID+'_p');
+	var c = $('#'+courseID+'_c');
+	var i = $('#'+courseID+'_i');
+
+	if(faClass == "completed" && !c.hasClass("check-active")){
+		p.removeClass("calendar-active");
+		c.addClass("check-active");
+		i.removeClass("ban-active");
+	} else if(faClass == "planned" && !p.hasClass("calendar-active")){
+		p.addClass("calendar-active");
+		c.removeClass("check-active");
+		i.removeClass("ban-active");
+	} else if(faClass == "ignored" && !i.hasClass("ban-active")){
+		p.removeClass("calendar-active");
+		c.removeClass("check-active");
+		i.addClass("ban-active");
+	}
 }
 
 // Course CHECKBOX select/deselect
@@ -344,9 +373,8 @@ function fillSpecDisplay(specID) {
 				el_row = document.createElement('tr');
 				el_row.innerHTML = 
 					'<table class="degreeCoursesTable"><tr>'+
-		 				'<td style="width:20px;"></td>'+
-         		   		'<td style="width:100px;"><b>Course</b></td>'+
-         		   		'<td><b>Name</b></td>'+
+         		   		'<td style="width:80px;"></td>'+
+         		   		'<td><b>Course</b></td>'+
            			 	'<td style="width:165px;"><b>2019 Terms</b></td>'+
 					'</tr>';
 				el_table.appendChild(el_row);
@@ -355,21 +383,14 @@ function fillSpecDisplay(specID) {
 				for (courseid in levelObj.compulsory) {
 					courseObj = levelObj.compulsory[courseid];
 
-					var checkbox = '<td><input id="'+courseid+'" type="checkbox"></td>'
-
-					if (typeof userData.courses["'"+courseid+"'"] === 'undefined'){
-						loadCourse(courseid, true);
-					} else {
-						if (userData.courses["'"+courseid+"'"].status == "completed"){
-							checkbox = '<td><input checked id="'+courseid+'" type="checkbox"></td>'
-						}
-					}
-
 					el_row = document.createElement('tr');
 					el_row.innerHTML =
-						checkbox+
-						'<td>'+courseid+'</td>'+
-						'<td class="degreeCourses-nameTF">'+courseObj.longname+'</td>'+
+						'<td>'+
+							'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
+           					'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+          					'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+						'</td>'+
+						'<td class="degreeCourses-nameTF">'+courseid+' - '+courseObj.longname+'</td>'+
 						'<td>'+
 							'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
 								'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
@@ -380,7 +401,10 @@ function fillSpecDisplay(specID) {
 						'</td>';
 					el_table.appendChild(el_row);
 
-					if (typeof userData.courses["'"+courseid+"'"] !== 'undefined'){
+					if (typeof userData.courses["'"+courseid+"'"] === 'undefined'){
+						loadCourse(courseid, true);
+					} else {
+						setStatusIcon(courseid, userData.courses["'"+courseid+"'"].state);
 						setTerms(courseid);
 					}
 
@@ -392,7 +416,6 @@ function fillSpecDisplay(specID) {
 
 					el_row = document.createElement('tr');
 					el_row.innerHTML =
-						'<td></td>'+
 						'<td></td>'+
 						'<td style="padding-top:15px;"><b style="color:#666;">Choose one of the following:</b></td>';
 					el_table.appendChild(el_row);
@@ -413,9 +436,13 @@ function fillSpecDisplay(specID) {
 
     					el_row = document.createElement('tr');
 						el_row.innerHTML =
-							radio+
-							'<td>'+courseid+'</td>'+
-							'<td class="degreeCourses-nameTF">'+courseObj.longname+'</td>'+
+							//radio+
+							'<td>'+
+								'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
+           						'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+          						'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+							'</td>'+
+							'<td class="degreeCourses-nameTF">'+courseid+' - '+courseObj.longname+'</td>'+
 							'<td>'+
 								'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
 									'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
@@ -429,6 +456,8 @@ function fillSpecDisplay(specID) {
 						if (typeof userData.courses["'"+courseid+"'"] !== 'undefined'){
 							setTerms(courseid);
 						}
+
+						setStatusIcon(courseid, "fa-calendar-alt");
 
     				}
 				}
