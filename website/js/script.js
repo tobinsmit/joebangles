@@ -118,7 +118,7 @@ loadUIFromJSON = function(data) {
 	// Load special courses
 
 	// Load courses to DragDrop
-	loadDragDropWithState(userData.courses)
+	loadDragDropWithState(userData.courses);
 }
 
 refresh = function() {
@@ -129,6 +129,7 @@ refresh = function() {
 // Load cookie when page is ready
 $(document).ready(function(){
 	readCookie();
+	reactivateTooltips();
 });
 
 //Save cookie on page unload

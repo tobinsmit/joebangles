@@ -7,7 +7,6 @@ var drake = dragula({
     }
 });
 
-reactivateTooltips();
 var scrollable = true;
 
 // el was lifted from source
@@ -145,7 +144,7 @@ loadDragDropPlanArr = function(planArr) {
 	clearDragDrop();
 	console.log("loadDragDropPlanArr", data);
 	for (let i_course in planArr) {
-		addCourse(planArr[i_course], '#completed');
+		addCourseDragDrop(planArr[i_course], '#completed');
 	}
 }
 
@@ -154,11 +153,11 @@ loadDragDropSplitObj = function(data) {
 	console.log("loadDragDropSplitObj", data);
 	for (let courseid in data.completedCourses) {
 		data.completedCourses[courseid].courseid = courseid.replace(/'/g,'');
-		addCourse(data.completedCourses[courseid], '#completed');
+		addCourseDragDrop(data.completedCourses[courseid], '#completed');
 	}
 	for (let courseid in data.plannedCourses) {
 		data.plannedCourses[courseid].courseid = courseid.replace(/'/g,'');
-		addCourse(data.plannedCourses[courseid], '#unassigned');
+		addCourseDragDrop(data.plannedCourses[courseid], '#unassigned');
 	}
 }
 
@@ -169,12 +168,12 @@ loadDragDropWithState = function(data) {
 		data[courseid].courseid = courseid.replace(/'/g,'');
 
 		if (data[courseid].state === "completed") {
-			addCourse(data[courseid], '#completed');
+			addCourseDragDrop(data[courseid], '#completed');
 		} else if (data[courseid].state === "planned") {
 			if (data[courseid].chosenTerm && data[courseid].chosenYear) {
-				addCourse(data[courseid], '#year' + data[courseid].chosenYear + 'term' + data[courseid].chosenTerm);
+				addCourseDragDrop(data[courseid], '#year' + data[courseid].chosenYear + 'term' + data[courseid].chosenTerm);
 			} else {
-				addCourse(data[courseid], '#unassigned');
+				addCourseDragDrop(data[courseid], '#unassigned');
 			}
 		} else {
 			// Don't add
@@ -183,7 +182,7 @@ loadDragDropWithState = function(data) {
 	reactivateTooltips();
 }
 
-addCourse = function(course, location) {
+addCourseDragDrop = function(course, location) {
 
 	html = 
 			'<div id="' + course.courseid + '" class="draggable course" data-toggle="tooltip" data-html="true"'
