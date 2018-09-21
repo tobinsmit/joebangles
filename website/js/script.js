@@ -121,13 +121,30 @@ readCookie = function(){
 
 // Loads state from a json object
 loadUI = function() {
-	console.log("loadUI")
+
+	// Clear everything first
+	$('#specialisationsTable').html('<tr><td><b>Specialisations</b></td></tr>');
+
+	$('#coursesTable').html('<tr>'+
+              					'<td style="width:100px;"></td>'+
+              					'<td><b>Course</b></td>'+
+              					'<td style="width:165px;"><b>2019 Terms</b></td>'+
+            				'</tr>');
+
+	$('#specDisplay').html("");
+	$('#specDisplayTitle').html("Add a Specialisation");
 
 	// Load specs for specTable
-
+	for(var spec in userData.specs){
+		loadSpec(userData.specs[spec]);
+	}
 
 	// Load special courses
-
+	for(var course in userData.courses){
+		if(userData.courses[course].isSpecial){
+			loadSpecialCourse(userData.courses[course].courseid, userData.courses[course].longname, true);
+		}
+	}
 
 	// Load courses to DragDrop
 	loadDragDropWithState(userData.courses);
@@ -156,8 +173,8 @@ refreshOLD = function() {
 readLocalStorage = function() {
 	console.log("readLocalStorage");
 	userData = JSON.parse(localStorage.userDataString);
-	console.log("Read data:");
-	console.log(userData);
+	//console.log("Read data:");
+	//console.log(userData);
 	loadUI();
 }
 
@@ -202,27 +219,24 @@ function loadSpec(specID){
 
 		userData.specs.push(specID);
 
-		// Empty text field
-		$('#specialisationTF').val("");
-		$('#specialisationTF').attr("placeholder", "");
-
-		// Add a row to the 'Specialisations Added' Table
-		$('#specialisationsTable').append(
-		'<tr><td><span onclick="loadSpec(&#39'+specID+'&#39)" class="internal-link">'+specID+'</span></td>'+
-		'<td><span class="fa fa-times icon" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
-
-		fillSpecDisplay(specID);
-
 	} 
 
-	// If existing spec
-	else {
+	// Empty text field
+	$('#specialisationTF').val("");
+	$('#specialisationTF').attr("placeholder", "");
 
-		fillSpecDisplay(specID);
+	$('#specialisationsTable').append(
+		'<tr><td><span onclick="fillSpecDisplay(&#39'+specID+'&#39)" class="internal-link">'+specID+'</span></td>'+
+		'<td><span class="fa fa-times icon" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
 
-	}
+	fillSpecDisplay(specID);
 
 }
+
+$('#reset').on('click', function(){
+	userData = {specs:[], courses:{}};
+	refresh();
+});
 
 // addSpecialCourse Click
 $('#addCourse').on('click', function() {
@@ -233,33 +247,33 @@ $('#addCourse').on('click', function() {
 	// Empty text field
 	$('#courseAddInput').val("");
 
-	loadSpecialCourse(courseid, courselongname);
+	if(typeof userData.courses["'"+courseid+"'"] === 'undefined'){
+		loadSpecialCourse(courseid, courselongname);
+	}
 
 });
 
 // Add a special course
 function loadSpecialCourse(courseID, longname){
 
-	if(typeof userData.courses["'"+courseID+"'"] === 'undefined'){
+	$('#coursesTable').append(
+		'<tr><td>'+
+			'<span class="fa fa-times icon" onclick="removeSpecialCourse(&#39'+courseID+'&#39)"></span>&emsp;'+
+			'<span id="'+courseID+'_c" class="fa fa-check icon"></span>&ensp;'+
+       		'<span id="'+courseID+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+      		'<span id="'+courseID+'_i" class="fa fa-ban icon"></span>'+
+		'</td>'+
+		'<td class="degreeCourses-nameTF">'+courseID+' - '+longname+'</td>'+
+		'<td>'+
+			'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
+				'<button id="'+courseID+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
+				'<button id="'+courseID+'_2" type="button" class="btn btn-outline-secondary term-btn">2</button>'+
+				'<button id="'+courseID+'_3" type="button" class="btn btn-outline-secondary term-btn">3</button>'+
+				'<button id="'+courseID+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
+			'</div>'+
+		'</td></tr>');
 
-		$('#coursesTable').append(
-			'<tr><td>'+
-				'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
-           		'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
-          		'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
-			'</td>'+
-			'<td class="degreeCourses-nameTF">'+courseid+' - '+longname+'</td>'+
-			'<td>'+
-				'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
-					'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
-					'<button id="'+courseid+'_2" type="button" class="btn btn-outline-secondary term-btn">2</button>'+
-					'<button id="'+courseid+'_3" type="button" class="btn btn-outline-secondary term-btn">3</button>'+
-					'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
-				'</div>'+
-			'</td></tr>');
-
-		loadCourse(courseID);
-	}
+	loadCourse(courseID, true, "planned");
 }
 
 function dragDropAddRow() {
@@ -314,8 +328,10 @@ function removeSpec(specID) {
 
 	var table = document.getElementById('specialisationsTable');
 
+	console.log(table.childNodes);
+
 	// Remove element from table
-	table.childNodes[0].removeChild(table.childNodes[0].childNodes[userData.specs.indexOf(specID)+1])
+	table.removeChild(table.childNodes[userData.specs.indexOf(specID)+1])
 
 	// Remove spec from specList
 	userData.specs.splice(userData.specs.indexOf(specID), 1);
@@ -331,19 +347,20 @@ function removeSpec(specID) {
 }
 
 // Removes the course at index 'index' from the courseList array
-function removeCourse(courseID) {
+function removeSpecialCourse(courseID) {
 
 	var table = document.getElementById('coursesTable');
+	console.log(table.childNodes);
 
 	// Remove element from table
-	table.childNodes[1].removeChild(table.childNodes[1].childNodes[courseList.indexOf(courseID)+2])
+	//table.removeChild(table.childNodes[]);
 
 	// Remove spec from specList
 	delete userData.courses["'"+courseID+"'"];
 }
 
 // Loads (but does NOT display) a given courseID
-function loadCourse(courseID){
+function loadCourse(courseID, isSpecial, defaultState){
 
 	// If course **IS NOT** in userData
 	if(typeof userData.courses["'"+courseID+"'"] === 'undefined'){
@@ -359,9 +376,13 @@ function loadCourse(courseID){
 													chosenTerm : null,
 													chosenYear : null,
 													prereq : null,
-													state : "planned",
+													state : defaultState,
 
 														};
+
+				if (isSpecial) {
+					userData.courses["'"+courseID+"'"].isSpecial = isSpecial;
+				}
 
 				if(typeof doc.data().terms[0] !== 'undefined'){
 
@@ -373,7 +394,7 @@ function loadCourse(courseID){
 					userData.courses["'"+courseID+"'"].prereq = doc.data().prereqs[0].exp;
 				}
 
-				loadCourse(courseID);
+				loadCourse(courseID, isSpecial, defaultState);
 
 			} else {
 
@@ -385,7 +406,7 @@ function loadCourse(courseID){
 	// If course **IS** in userData
 	} else {
 
-		setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state);
+		setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state, true);
 		setTerms(courseID);
 
 	}
@@ -425,59 +446,64 @@ function setTerms(courseID){
 
 $(document).on('click', '.icon', function(){
 
-	courseID = $(this).attr('id').substring(0,8);
+	if(!$(this).hasClass('fa-times')){
 
-	if($(this).hasClass("fa-check")){
-		setStatusIcon(courseID, "completed");
-		userData.courses["'"+courseID+"'"].state = "completed";
-	} else if($(this).hasClass("fa-calendar-alt")){
-		setStatusIcon(courseID, "planned");
-		userData.courses["'"+courseID+"'"].state = "planned";
-	} else if($(this).hasClass("fa-ban")){
-		setStatusIcon(courseID, "ignored");
-		userData.courses["'"+courseID+"'"].state = "ignored";
+		courseID = $(this).attr('id').substring(0,8);
+
+		if($(this).hasClass("fa-check")){
+			setStatusIcon(courseID, "completed", false);
+		} else if($(this).hasClass("fa-calendar-alt")){
+			setStatusIcon(courseID, "planned", false);
+		} else if($(this).hasClass("fa-ban")){
+			setStatusIcon(courseID, "ignored", false);
+		}
+
 	}
 
 });
 
-function setStatusIcon(courseID, state){
+function setStatusIcon(courseID, state, initialLoad){
+
+	userData.courses["'"+courseID+"'"].state = state;
 
 	var p = $('#'+courseID+'_p');
 	var c = $('#'+courseID+'_c');
 	var i = $('#'+courseID+'_i');
 
-	if(p.attr('class').startsWith('s')){
-
-		if(state == "completed" && !c.hasClass("check-active")){
-			p.removeClass("calendar-active");
-			c.addClass("check-active");
-			i.removeClass("ban-active");
-		} else if(state == "planned" && !p.hasClass("calendar-active")){
-			p.addClass("calendar-active");
-			c.removeClass("check-active");
-			i.removeClass("ban-active");
-		} else if(state == "ignored" && !i.hasClass("ban-active")){
-			p.removeClass("calendar-active");
-			c.removeClass("check-active");
-			i.addClass("ban-active");
-		}
+	if(p.attr('class').startsWith('s') && !(initialLoad && state == "ignored")){
 
 		var elList = $('.'+p.attr('class').substring(0,4));
 
 		for(var j=2; j < elList.length+2; j+=3){
 			var id = $(elList[j]).attr('id').substring(0,8);
-			if(id != courseID){
+
+			if(id != courseID) {
 				$('#'+id+'_p').removeClass("calendar-active");
 				$('#'+id+'_c').removeClass("check-active");
 				$('#'+id+'_i').addClass("ban-active");
-				
+
 				if(typeof userData.courses["'"+id+"'"] !== 'undefined'){
 					userData.courses["'"+id+"'"].state = "ignored";
 				}
+
+			} else {
+
+				if(state == "completed" && !c.hasClass("check-active")){
+					p.removeClass("calendar-active");
+					c.addClass("check-active");
+					i.removeClass("ban-active");
+				} else if(state == "planned" && !p.hasClass("calendar-active")){
+					p.addClass("calendar-active");
+					c.removeClass("check-active");
+					i.removeClass("ban-active");
+				} else if(state == "ignored" && !i.hasClass("ban-active")){
+					p.removeClass("calendar-active");
+					c.removeClass("check-active");
+					i.addClass("ban-active");
+				}
+
 			}
 		}
-
-		console.log(userData.courses);
 
 	} else {
 
@@ -504,6 +530,8 @@ function setStatusIcon(courseID, state){
 
 // Fill the div #specDisplay with course levels, levels, compulsory subs (checkbox) and option sets (radio)
 function fillSpecDisplay(specID) {
+
+	var defaultState;
 
 	db.doc("degrees/" + specID).onSnapshot(doc => {
 		if (doc.exists) {
@@ -626,14 +654,20 @@ function fillSpecDisplay(specID) {
 			for (i_level in courseLevels) {
 				levelObj = courseLevels[i_level];
 
+				if(levelObj.levelid.toLowerCase().includes("elective")){
+					defaultState = "ignored";
+				} else {
+					defaultState = "planned";
+				}
+
 				for (courseid in levelObj.compulsory) {
-					loadCourse(courseid);
+					loadCourse(courseid, false, defaultState);
 				}
 
 				for (i_optionSet in levelObj.optionSets) {
 					optionSet = levelObj.optionSets[i_optionSet]
     				for (courseid in optionSet) {
-    					loadCourse(courseid);
+    					loadCourse(courseid, false, defaultState);
     				}
 				}
 			}

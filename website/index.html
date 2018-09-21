@@ -42,6 +42,8 @@
             </div>
           </div>
         </div>
+        <button type="button" class="btn btn-secondary" id="reset">Reset</button>
+        Do not use the <span class="fa fa-times"></span> to remove courses and specialisations, use this reset instead.
       </div>
     </div>
 
@@ -92,7 +94,7 @@
           <!-- Dont change the indentation of this table, function removeCourse does not like whitespace -->
           <table id="coursesTable">
             <tr>
-              <td style="width:80px;"></td>
+              <td style="width:100px;"></td>
               <td><b>Course</b></td>
               <td style="width:165px;"><b>2019 Terms</b></td>
             </tr>
@@ -107,6 +109,7 @@
       <div class="container text-center pt-3">
         <!-- Top row of containers  -->
         <button class="btn btn-warning" onclick="refresh()">GO</button>
+        <br><br>
         <div class="card mb-3">
           <div class="card-header">
             Completed
