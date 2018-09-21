@@ -1,5 +1,5 @@
 # joebangles
-A degree planner that helps you organise what subjects to do when for UNSW
+A degree planner that helps you organise what subjects to do when for UNSW. Currently in a1.0.0
 
 ## User Experience
 User actions are regular points, app actions are in \* \* 
