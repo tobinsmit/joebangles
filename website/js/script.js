@@ -24,6 +24,7 @@ $input.typeahead({
   showHintOnFocus: true,
   fitToElement: true
 });
+
 db.doc("other/commonInfo").onSnapshot(doc => {
 	if (doc.exists) {
 		//console.log("Course list doc found");
@@ -31,7 +32,7 @@ db.doc("other/commonInfo").onSnapshot(doc => {
 	} else {
 		console.log("Course list doc NOT found");
 	}
-})
+});
  
 /*
 	Cookie functions
@@ -137,7 +138,6 @@ $(window).on('unload', function() {
 	writeCookie();
 });
 
-
 /*
  * Adding functions
  */
@@ -181,42 +181,43 @@ function loadSpec(specID){
 
 }
 
-// addCourse Click
+// addSpecialCourse Click
 $('#addCourse').on('click', function() {
 	
 	courseid = $('#courseAddInput').val().substring(0,8);
 	courselongname = $('#courseAddInput').val().substring(11);
 
-	if(courseList.indexOf(courseid) == -1 && courseid != ""){
+	// Empty text field
+	$('#courseAddInput').val("");
+
+	loadSpecialCourse(courseid, courselongname);
+
+});
+
+// Add a special course
+function loadSpecialCourse(courseID, longname){
+
+	if(typeof userData.courses["'"+courseID+"'"] === 'undefined'){
 
 		$('#coursesTable').append(
-			'<tr>'+
-				'<td><span onclick="removeCourse(&#39'+courseid+'&#39)" class="fa fa-times" style="cursor:pointer"></span></td>'+
-				'<td><input type="checkbox" id="'+courseid+'" class="'+courseid+'"></td>'+
-				'<td>'+courseid+'</td>'+
-				'<td class="degreeCourses-nameTF">'+courselongname+'</td>'+
-				'<td>'+
-					'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
-						'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
-						'<button id="'+courseid+'_2" type="button" class="btn btn-outline-secondary term-btn">2</button>'+
-						'<button id="'+courseid+'_3" type="button" class="btn btn-outline-secondary term-btn">3</button>'+
-						'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
-					'</div>'+
-				'</td>'+
-			'</tr>'
-		);
+			'<tr><td>'+
+				'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
+           		'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+          		'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+			'</td>'+
+			'<td class="degreeCourses-nameTF">'+courseid+' - '+longname+'</td>'+
+			'<td>'+
+				'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
+					'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
+					'<button id="'+courseid+'_2" type="button" class="btn btn-outline-secondary term-btn">2</button>'+
+					'<button id="'+courseid+'_3" type="button" class="btn btn-outline-secondary term-btn">3</button>'+
+					'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
+				'</div>'+
+			'</td></tr>');
 
-		setTerms(courseid);
-
-		// Add this spec to the list of specs added
-		courseList.push(courseid);
-
-		// Empty text field
-		$('#courseAddInput').val("");
-
+		loadCourse(courseID);
 	}
-	
-});
+}
 
 function dragDropAddRow() {
 	year = $('.year').length + 1;
@@ -236,155 +237,6 @@ function dragDropRemoveRow() {
 	})
 	$('.year').last().remove();
 }
-
-// Loads (but does NOT display) a given courseID
-function loadCourse(courseID, callSetTerms){
-	db.doc("courses/" + courseID).onSnapshot(doc => {
-		if (doc.exists) {
-
-			userData.courses["'"+courseID+"'"] = 	{
-
-												longname : doc.data().longname,
-												availableTerms : null,
-												chosenTerm : null,
-												chosenYear : null,
-												prereq : null,
-												state : "ignored",
-
-													};
-
-			if(typeof doc.data().terms[0] !== 'undefined'){
-
-				userData.courses["'"+courseID+"'"].availableTerms = doc.data().terms[0].terms;
-			}
-
-			if(typeof doc.data().prereqs[0] !== 'undefined'){
-
-				userData.courses["'"+courseID+"'"].prereq = doc.data().prereqs[0].exp;
-			}
-
-			setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state);
-
-			if(callSetTerms){
-				setTerms(courseID);
-			}
-
-		} else {
-
-			scrapeCourse(courseID);
-
-		}
-	});
-
-}
-
-/*
- * Setting functions
- */
-
-// Sets the offering terms for a given courseID
-function setTerms(courseID){
-
-	var terms = [];
-
-	for(i in userData.courses["'"+courseID+"'"].availableTerms){
-				
-		term = userData.courses["'"+courseID+"'"].availableTerms[i];
-
-		if(term == "Term 1"){
-			terms.push(1);
-		} else if(term == "Term 2"){
-			terms.push(2);
-		} else if(term == "Term 3"){
-			terms.push(3);
-		} else if(term == "Summer Term"){
-			terms.push(4);
-		}
-
-	}
-
-	for(j in terms){
-		$('#'+courseID+'_'+terms[j]).addClass('active');
-	}
-
-}
-
-$(document).on('click', '.icon', function(){
-
-	if($(this).hasClass("fa-check")){
-		setStatusIcon($(this).attr('id').substring(0,8), "completed");
-		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "completed";
-	} else if($(this).hasClass("fa-calendar-alt")){
-		setStatusIcon($(this).attr('id').substring(0,8), "planned");
-		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "planned";
-	} else if($(this).hasClass("fa-ban")){
-		setStatusIcon($(this).attr('id').substring(0,8), "ignored");
-		userData.courses["'"+$(this).attr('id').substring(0,8)+"'"].state = "ignored";
-	}
-
-});
-
-function setStatusIcon(courseID, faClass){
-
-	var p = $('#'+courseID+'_p');
-	var c = $('#'+courseID+'_c');
-	var i = $('#'+courseID+'_i');
-
-	if(faClass == "completed" && !c.hasClass("check-active")){
-		p.removeClass("calendar-active");
-		c.addClass("check-active");
-		i.removeClass("ban-active");
-	} else if(faClass == "planned" && !p.hasClass("calendar-active")){
-		p.addClass("calendar-active");
-		c.removeClass("check-active");
-		i.removeClass("ban-active");
-	} else if(faClass == "ignored" && !i.hasClass("ban-active")){
-		p.removeClass("calendar-active");
-		c.removeClass("check-active");
-		i.addClass("ban-active");
-	}
-}
-
-// Course CHECKBOX select/deselect
-$(document).on('change', ':checkbox', function() {
-
-	var courseID = $(this).attr('id');
-
-    if(this.checked) {
-      
-    	userData.courses["'"+courseID+"'"].status = "completed";
-
-    } else {
-    	
-    	userData.courses["'"+courseID+"'"].status = "planned";
-
-    }
-});
-
-// Course RADIO select/deselect
-$(document).on('click', ':radio', function() {
-
-	var courseID = $(this).attr('id');
-
-	for (var el of $('input[name="'+$(this).attr('name')+'"]')) {
-
-		userData.courses["'"+$(el).attr('id')+"'"].status = "ignored";
-
-	}
-
-	if(this.checked) {
-      
-    	userData.courses["'"+courseID+"'"].status = "completed";
-
-    } else {
-    	
-    	userData.courses["'"+courseID+"'"].status = "planned";
-
-    }
-
-	console.log(userData);
-
-});
 
 // When the terms are changed
 $(document).on('click', '.term-btn', function(){
@@ -444,7 +296,163 @@ function removeCourse(courseID) {
 	table.childNodes[1].removeChild(table.childNodes[1].childNodes[courseList.indexOf(courseID)+2])
 
 	// Remove spec from specList
-	courseList.splice(courseList.indexOf(courseID), 1);
+	delete userData.courses["'"+courseID+"'"];
+}
+
+// Loads (but does NOT display) a given courseID
+function loadCourse(courseID){
+
+	// If course **IS NOT** in userData
+	if(typeof userData.courses["'"+courseID+"'"] === 'undefined'){
+
+		db.doc("courses/" + courseID).onSnapshot(doc => {
+
+			if (doc.exists) {
+
+				userData.courses["'"+courseID+"'"] = 	{
+
+													longname : doc.data().longname,
+													availableTerms : null,
+													chosenTerm : null,
+													chosenYear : null,
+													prereq : null,
+													state : "planned",
+
+														};
+
+				if(typeof doc.data().terms[0] !== 'undefined'){
+
+					userData.courses["'"+courseID+"'"].availableTerms = doc.data().terms[0].terms;
+				}
+
+				if(typeof doc.data().prereqs[0] !== 'undefined'){
+
+					userData.courses["'"+courseID+"'"].prereq = doc.data().prereqs[0].exp;
+				}
+
+				loadCourse(courseID);
+
+			} else {
+
+				scrapeCourse(courseID);
+
+			}
+		});
+
+	// If course **IS** in userData
+	} else {
+
+		setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state);
+		setTerms(courseID);
+
+	}
+}
+
+/*
+ * Setting functions
+ */
+
+// Sets the offering terms for a given courseID
+function setTerms(courseID){
+
+	var terms = [];
+
+	for(i in userData.courses["'"+courseID+"'"].availableTerms){
+				
+		term = userData.courses["'"+courseID+"'"].availableTerms[i];
+
+		if(term == "Term 1"){
+			terms.push(1);
+		} else if(term == "Term 2"){
+			terms.push(2);
+		} else if(term == "Term 3"){
+			terms.push(3);
+		} else if(term == "Summer Term"){
+			terms.push(4);
+		}
+
+	}
+	
+	for(j in terms){
+		$('#'+courseID+'_'+terms[j]).addClass('active');
+
+	}
+
+}
+
+$(document).on('click', '.icon', function(){
+
+	courseID = $(this).attr('id').substring(0,8);
+
+	if($(this).hasClass("fa-check")){
+		setStatusIcon(courseID, "completed");
+		userData.courses["'"+courseID+"'"].state = "completed";
+	} else if($(this).hasClass("fa-calendar-alt")){
+		setStatusIcon(courseID, "planned");
+		userData.courses["'"+courseID+"'"].state = "planned";
+	} else if($(this).hasClass("fa-ban")){
+		setStatusIcon(courseID, "ignored");
+		userData.courses["'"+courseID+"'"].state = "ignored";
+	}
+
+});
+
+function setStatusIcon(courseID, state){
+
+	var p = $('#'+courseID+'_p');
+	var c = $('#'+courseID+'_c');
+	var i = $('#'+courseID+'_i');
+
+	if(p.attr('class').startsWith('s')){
+
+		if(state == "completed" && !c.hasClass("check-active")){
+			p.removeClass("calendar-active");
+			c.addClass("check-active");
+			i.removeClass("ban-active");
+		} else if(state == "planned" && !p.hasClass("calendar-active")){
+			p.addClass("calendar-active");
+			c.removeClass("check-active");
+			i.removeClass("ban-active");
+		} else if(state == "ignored" && !i.hasClass("ban-active")){
+			p.removeClass("calendar-active");
+			c.removeClass("check-active");
+			i.addClass("ban-active");
+		}
+
+		var elList = $('.'+p.attr('class').substring(0,4));
+
+		for(var j=2; j < elList.length+2; j+=3){
+			var id = $(elList[j]).attr('id').substring(0,8);
+			if(id != courseID){
+				$('#'+id+'_p').removeClass("calendar-active");
+				$('#'+id+'_c').removeClass("check-active");
+				$('#'+id+'_i').addClass("ban-active");
+				
+				if(typeof userData.courses["'"+id+"'"] !== 'undefined'){
+					userData.courses["'"+id+"'"].state = "ignored";
+				}
+			}
+		}
+
+		console.log(userData.courses);
+
+	} else {
+
+		if(state == "completed" && !c.hasClass("check-active")){
+			p.removeClass("calendar-active");
+			c.addClass("check-active");
+			i.removeClass("ban-active");
+		} else if(state == "planned" && !p.hasClass("calendar-active")){
+			p.addClass("calendar-active");
+			c.removeClass("check-active");
+			i.removeClass("ban-active");
+		} else if(state == "ignored" && !i.hasClass("ban-active")){
+			p.removeClass("calendar-active");
+			c.removeClass("check-active");
+			i.addClass("ban-active");
+		}
+
+	}
 }
 
 /*
@@ -522,15 +530,10 @@ function fillSpecDisplay(specID) {
 								'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
 							'</div>'+
 						'</td>';
-					el_table.appendChild(el_row);
 
-					if (typeof userData.courses["'"+courseid+"'"] === 'undefined'){
-						loadCourse(courseid, true);
-					} else {
-						setStatusIcon(courseid, userData.courses["'"+courseid+"'"].state);
-						setTerms(courseid);
+					if(document.getElementById(courseid+'_1') == null){
+						el_table.appendChild(el_row);
 					}
-
 				}
 
 				// For each set of options
@@ -547,23 +550,12 @@ function fillSpecDisplay(specID) {
     				for (courseid in optionSet) {
     					courseObj = optionSet[courseid];
 
-    					var radio = '<td><input name="'+levelid + " " + i_optionSet+'" type="radio" id="'+courseid+'"></td>';
-
-    					if (typeof userData.courses["'"+courseid+"'"] === 'undefined'){
-							loadCourse(courseid, true);
-						} else {
-							if (userData.courses["'"+courseid+"'"].status == "completed"){
-								radio = '<td><input checked name="'+levelid + " " + i_optionSet+'" type="radio" id="'+courseid+'"></td>';
-							}
-						}
-
     					el_row = document.createElement('tr');
 						el_row.innerHTML =
-							//radio+
 							'<td>'+
-								'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
-           						'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
-          						'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+								'<span id="'+courseid+'_c" class="set'+i_optionSet+' fa fa-check icon"></span>&ensp;'+
+           						'<span id="'+courseid+'_p" class="set'+i_optionSet+' far fa-calendar-alt icon"></span>&ensp;'+
+          						'<span id="'+courseid+'_i" class="set'+i_optionSet+' fa fa-ban icon"></span>'+
 							'</td>'+
 							'<td class="degreeCourses-nameTF">'+courseid+' - '+courseObj.longname+'</td>'+
 							'<td>'+
@@ -574,13 +566,10 @@ function fillSpecDisplay(specID) {
 									'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
 								'</div>'+
 							'</td>';
-						el_table.appendChild(el_row);
 
-						if (typeof userData.courses["'"+courseid+"'"] !== 'undefined'){
-							setTerms(courseid);
+						if(document.getElementById(courseid+'_1') == null){
+							el_table.appendChild(el_row);
 						}
-
-						setStatusIcon(courseid, "fa-calendar-alt");
 
     				}
 				}
@@ -589,6 +578,21 @@ function fillSpecDisplay(specID) {
 				el_card.appendChild(el_cardBody);
 				document.getElementById("specDisplay").appendChild(el_card);
 
+			}
+
+			for (i_level in courseLevels) {
+				levelObj = courseLevels[i_level];
+
+				for (courseid in levelObj.compulsory) {
+					loadCourse(courseid);
+				}
+
+				for (i_optionSet in levelObj.optionSets) {
+					optionSet = levelObj.optionSets[i_optionSet]
+    				for (courseid in optionSet) {
+    					loadCourse(courseid);
+    				}
+				}
 			}
 
 		} else {

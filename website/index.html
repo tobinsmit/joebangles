@@ -50,7 +50,11 @@
     <div class="background" style="background-color:#A4EAFF;min-height: 300px;">
       <div class="container">
 
-        <span>2. Below, select the courses you have already completed.</span>
+        <span>2. Below, select:
+          <span class="fa fa-check"></span> I've completed this course, &nbsp;
+          <span class="far fa-calendar-alt"></span> I'm planning on completing this course, &nbsp;
+          <span class="fa fa-ban"></span> I won't be completing this course
+        </span>
         <br><br>
 
         <div class="row">
@@ -70,7 +74,7 @@
     <!-- Step 3 -->
 
     <div class="background" style="background-color:#7EE2FF;">
-      <div class="container" style="min-height: 500px;">
+      <div class="container" style="min-height: 300px;">
 
         <span>3. Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
         <br><br>
@@ -88,10 +92,8 @@
           <!-- Dont change the indentation of this table, function removeCourse does not like whitespace -->
           <table id="coursesTable">
             <tr>
-              <td style="width:30px;"></td>
-              <td style="width:30px;"></td>
-              <td style="width:100px;"><b>Course</b></td>
-              <td><b>Name</b></td>
+              <td style="width:80px;"></td>
+              <td><b>Course</b></td>
               <td style="width:165px;"><b>2019 Terms</b></td>
             </tr>
           </table>
