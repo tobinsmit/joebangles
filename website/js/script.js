@@ -53,8 +53,17 @@ saveStateToJSONString = function() {
 	string = JSON.stringify(temp_obj);
 	console.log("saveStateToJSON");
 	console.log(string);
+	if (byteCount(string) >= 4000) {
+		alert("Cannot store cookie as too many courses are marked as completed or planned");
+		console.error("Cannot store cookie as too many courses are marked as completed or planned");
+		return
+	}
 	return string
 }
+byteCount = function(s) {
+    return encodeURI(s).split(/%..|./).length - 1;
+}
+
 
 // Turns objects with state : 'ignored' to null
 function removeIgnored(obj) {
