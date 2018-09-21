@@ -644,3 +644,72 @@ function fillSpecDisplay(specID) {
 	});
 }
 
+removeSpec = function(removeSpecID) {
+	deleteCourses = {};
+
+	// Set remove value for subjects in removeSpecID to true
+	for (courseLevel in userData.specs[removeSpecID].courseLevels) {
+		for (course in userData.specs[removeSpecID].courseLevels[courseLevel].compulsory) {
+			deleteCourses[courseID] = true;
+		}
+		for (optionSet in userData.specs[removeSpecID].courseLevels[courseLevel].optionSets) {
+			for (course in userData.specs[removeSpecID].courseLevels[courseLevel].optionSets[optionSet]) {
+				deleteCourses[courseID] = true;
+			}
+		}
+	}
+
+	// Set remove value for subjects in other specs to false
+	for (specID in userData.specs) {
+		if (specID != removeSpecID) {
+			for (courseLevel in userData.specs[specID].courseLevels) {
+				for (course in userData.specs[specID].courseLevels[courseLevel].compulsory) {
+					deleteCourses[courseID] = false;
+				}
+				for (optionSet in userData.specs[specID].courseLevels[courseLevel].optionSets) {
+					for (course in userData.specs[specID].courseLevels[courseLevel].optionSets[optionSet]) {
+						deleteCourses[courseID] = false;
+					}
+				}
+			}
+		}
+	}
+
+	// Delete the spec
+	delete userData.specs[removeSpecID]
+
+	// Delete each course
+	for (courseID in deleteCourses) {
+		if (deleteCourses[courseID] == true) {
+			delete userData.courses[courseID];
+		}
+	}
+}
+
+userDataMock = {
+	specs : {
+		MTRNAH : {
+			courseLevels : [
+				{
+					compulsory : {
+						MMAN1300 : {},
+						ENGG1000 : {}
+					},
+					optionSets : [
+						{
+							MATH1131 : {},
+							MATH1141 : {}
+						},
+						{
+							PHYS1121 : {},
+							PHYS1131 : {}
+						}
+					]
+				}
+			]
+		}
+	}
+}
+
+
+
