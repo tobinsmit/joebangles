@@ -111,7 +111,8 @@ readCookie = function(){
 			thisCookie = thisCookie.replace(/;.*/g,'');
 			thisCookie = JSON.parse(thisCookie);
 			console.log("This cookie data:",thisCookie);
-			loadUIFromJSON(thisCookie);
+			userData = thisCookie;
+			loadUI();
 		} else {
 			console.log('not match');
 		}
@@ -119,33 +120,66 @@ readCookie = function(){
 };
 
 // Loads state from a json object
-loadUIFromJSON = function(data) {
-	console.log("loadUIFromJSON", data)
-	userData = data;
+loadUI = function() {
+	console.log("loadUI")
 
 	// Load specs for specTable
 
+
 	// Load special courses
+
 
 	// Load courses to DragDrop
 	loadDragDropWithState(userData.courses);
 }
 
-refresh = function() {
+refreshOLD = function() {
 	writeCookie();
 	readCookie();
 }
 
 // Load cookie when page is ready
-$(document).ready(function(){
-	readCookie();
-	reactivateTooltips();
-});
+// $(document).ready(function(){
+// 	readCookie();
+// 	reactivateTooltips();
+// });
 
 //Save cookie on page unload
-$(window).on('unload', function() {
-	writeCookie();
+// $(window).on('unload', function() {
+// 	writeCookie();
+// });
+
+/*
+	localStorage functions
+*/
+
+readLocalStorage = function() {
+	console.log("readLocalStorage");
+	userData = JSON.parse(localStorage.userDataString);
+	console.log("Read data:");
+	console.log(userData);
+	loadUI();
+}
+
+writeLocalStorage = function() {
+	console.log("writeLocalStorage");
+	localStorage.userDataString = JSON.stringify(userData);
+}
+
+// Load when page is ready
+$(document).ready(function(){
+	readLocalStorage();
 });
+
+// Save on page unload
+$(window).on('unload', function() {
+	writeLocalStorage();
+});
+
+refresh = function() {
+	writeLocalStorage();
+	readLocalStorage();
+}
 
 /*
  * Adding functions
