@@ -32,7 +32,7 @@ db.doc("other/commonInfo").onSnapshot(doc => {
 	} else {
 		console.log("Course list doc NOT found");
 	}
-})
+});
 
 /*
  * Adding functions
@@ -77,42 +77,43 @@ function loadSpec(specID){
 
 }
 
-// addCourse Click
+// addSpecialCourse Click
 $('#addCourse').on('click', function() {
 	
 	courseid = $('#courseAddInput').val().substring(0,8);
 	courselongname = $('#courseAddInput').val().substring(11);
 
-	if(courseList.indexOf(courseid) == -1 && courseid != ""){
+	// Empty text field
+	$('#courseAddInput').val("");
+
+	loadSpecialCourse(courseid, courselongname);
+
+});
+
+// Add a special course
+function loadSpecialCourse(courseID, longname){
+
+	if(typeof userData.courses["'"+courseID+"'"] === 'undefined'){
 
 		$('#coursesTable').append(
-			'<tr>'+
-				'<td><span onclick="removeCourse(&#39'+courseid+'&#39)" class="fa fa-times" style="cursor:pointer"></span></td>'+
-				'<td><input type="checkbox" id="'+courseid+'" class="'+courseid+'"></td>'+
-				'<td>'+courseid+'</td>'+
-				'<td class="degreeCourses-nameTF">'+courselongname+'</td>'+
-				'<td>'+
-					'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
-						'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
-						'<button id="'+courseid+'_2" type="button" class="btn btn-outline-secondary term-btn">2</button>'+
-						'<button id="'+courseid+'_3" type="button" class="btn btn-outline-secondary term-btn">3</button>'+
-						'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
-					'</div>'+
-				'</td>'+
-			'</tr>'
-		);
+			'<tr><td>'+
+				'<span id="'+courseid+'_c" class="fa fa-check icon"></span>&ensp;'+
+           		'<span id="'+courseid+'_p" class="far fa-calendar-alt icon"></span>&ensp;'+
+          		'<span id="'+courseid+'_i" class="fa fa-ban icon"></span>'+
+			'</td>'+
+			'<td class="degreeCourses-nameTF">'+courseid+' - '+longname+'</td>'+
+			'<td>'+
+				'<div class="btn-group-toggle btn-group" data-toggle="buttons" role="group">'+
+					'<button id="'+courseid+'_1" type="button" class="btn btn-outline-secondary term-btn">1</button>'+
+					'<button id="'+courseid+'_2" type="button" class="btn btn-outline-secondary term-btn">2</button>'+
+					'<button id="'+courseid+'_3" type="button" class="btn btn-outline-secondary term-btn">3</button>'+
+					'<button id="'+courseid+'_4" type="button" class="btn btn-outline-secondary term-btn">Sum.</button>'+
+				'</div>'+
+			'</td></tr>');
 
-		setTerms(courseid);
-
-		// Add this spec to the list of specs added
-		courseList.push(courseid);
-
-		// Empty text field
-		$('#courseAddInput').val("");
-
+		loadCourse(courseID);
 	}
-	
-});
+}
 
 function dragDropAddRow() {
 	year = $('.year').length + 1;
@@ -191,7 +192,7 @@ function removeCourse(courseID) {
 	table.childNodes[1].removeChild(table.childNodes[1].childNodes[courseList.indexOf(courseID)+2])
 
 	// Remove spec from specList
-	courseList.splice(courseList.indexOf(courseID), 1);
+	delete userData.courses["'"+courseID+"'"];
 }
 
 // Loads (but does NOT display) a given courseID
