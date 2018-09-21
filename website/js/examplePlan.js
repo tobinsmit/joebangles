@@ -36,13 +36,15 @@ drake.on('dragend', function(el){
 			$(this).addClass('course-invalid');
 		}
 	})
+
+  // Update el's selected term and year
+  updateCourseData(el);
     
 });
 
 // el was dropped into target before a sibling element, and originally came from source
 drake.on('drop', function(el, target, source, sibling){
-    // Update el's selected term and year
-    $('.term').removeClass('term-option');
+
 });
 
 
@@ -56,23 +58,35 @@ document.addEventListener('touchmove', listener, { passive:false });
 
 readDragDrop = function () {
   $('.course').each( function() {
-    if ($(this).parent().hasClass('term')) {
-      userData.courses[$(this).attr('id')].state = 'planned';
-      userData.courses[$(this).attr('id')].chosenTerm = $(this).parent().data('term');
-      userData.courses[$(this).attr('id')].chosenYear = $(this).parent().parent().data('term');
-    } else if ($(this).parent().attr('id') === 'completed') {
-      userData.courses[$(this).attr('id')].state = 'completed';
-    } else if ($(this).parent().attr('id') === 'unassigned') {
-      userData.courses[$(this).attr('id')].state = 'planned';      
-    } else {
-      console.error("DropDrop readDragDrop: Unexpected location for course");
-    }
+    updateCourseData(this);
   });
 }
-
+updateCourseData = function(el) {
+	let courseid = $(el).attr('id');
+	let badcourseid = "'" + courseid + "'";
+	console.log("updateCourseData: " + courseid);
+  if ($(el).parent().hasClass('term')) {
+  	// In term
+    userData.courses[badcourseid].state = 'planned';
+    userData.courses[badcourseid].chosenTerm = $(el).parent().data('term');
+    userData.courses[badcourseid].chosenYear = $(el).parent().parent().parent().data('year');
+  } else if ($(el).parent().attr('id') === 'completed') {
+  	// In completed
+    userData.courses[badcourseid].state = 'completed';
+    userData.courses[badcourseid].chosenTerm = null;
+    userData.courses[badcourseid].chosenYear = null;
+  } else if ($(el).parent().attr('id') === 'unassigned') {
+  	// In unassigned
+    userData.courses[badcourseid].state = 'planned';      
+    userData.courses[badcourseid].chosenTerm = null;
+    userData.courses[badcourseid].chosenYear = null;
+  } else {
+    console.error("DropDrop readDragDrop: Unexpected location for course", el);
+  }
+}
 
 checkIfValid = function(el, target) {
-	// Accept unnasigned
+	// Accept unassigned
 	if ($(target).hasClass('notInvalid')){
 		return true
 	}
@@ -116,25 +130,59 @@ checkIfValid = function(el, target) {
 	return true
 }
 
-addPlanArr = function(planArr) {
+clearDragDrop = function() {
+	$('.course').remove();
+}
+
+reactivateTooltips = function() {
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+}
+
+loadDragDropPlanArr = function(planArr) {
+	clearDragDrop();
+	console.log("loadDragDropPlanArr", data);
 	for (let i_course in planArr) {
-		addCourse(planArr[i_course], '#completed');
+		addCourseDragDrop(planArr[i_course], '#completed');
 	}
 }
 
-addPlanSplitObj = function(data) {
-	console.log("addPlanSplitObj", data);
+loadDragDropSplitObj = function(data) {
+	clearDragDrop();
+	console.log("loadDragDropSplitObj", data);
 	for (let courseid in data.completedCourses) {
 		data.completedCourses[courseid].courseid = courseid.replace(/'/g,'');
-		addCourse(data.completedCourses[courseid], '#completed');
+		addCourseDragDrop(data.completedCourses[courseid], '#completed');
 	}
 	for (let courseid in data.plannedCourses) {
 		data.plannedCourses[courseid].courseid = courseid.replace(/'/g,'');
-		addCourse(data.plannedCourses[courseid], '#unassigned');
+		addCourseDragDrop(data.plannedCourses[courseid], '#unassigned');
 	}
 }
 
-addCourse = function(course, location) {
+loadDragDropWithState = function(data) {
+	clearDragDrop();
+	console.log("loadDragDropWithState", data);
+	for (let courseid in data) {
+		data[courseid].courseid = courseid.replace(/'/g,'');
+
+		if (data[courseid].state === "completed") {
+			addCourseDragDrop(data[courseid], '#completed');
+		} else if (data[courseid].state === "planned") {
+			if (data[courseid].chosenTerm && data[courseid].chosenYear) {
+				addCourseDragDrop(data[courseid], '#year' + data[courseid].chosenYear + 'term' + data[courseid].chosenTerm);
+			} else {
+				addCourseDragDrop(data[courseid], '#unassigned');
+			}
+		} else {
+			// Don't add
+		}
+	}
+	reactivateTooltips();
+}
+
+addCourseDragDrop = function(course, location) {
 
 	html = 
 			'<div id="' + course.courseid + '" class="draggable course" data-toggle="tooltip" data-html="true"'
@@ -157,130 +205,130 @@ addCourse = function(course, location) {
 	$(location).append(html);
 }
 
-examplePlanArr = [
-	{
-	  courseid : "ENGG1000",
-	  availableTerms : [1,2,3],
-		longname : "Engineering Design",
-		completed : true
-	},
-	{
-	  courseid : "MATH1131",
-	  availableTerms : [1,2,3],
-		longname : "Mathematics 1A",
-		completed : true
-	},
-	{
-	  courseid : "MATH1231",
-	  availableTerms : [1,2,3],
-		longname : "Mathematics 1B",
-		prereq : "MATH1131 + MATH1141",
-		completed : true
-	},
-	{
-	  courseid : "PHYS1121",
-		longname : "Physics 1A",
-		availableTerms : ["Summer", "1", "2", "3"],
-		completed : true
-	},
-	{
-	  courseid : "MMAN2100",
-		longname : "Engineering Design 2",
-		availableTerms : [3],
-		// prereq : "ENGG1000",
-		completed : true
-	},
-	{
-	  courseid : "MMAN2300",
-		longname : "Engineering Mechanics 2",
-		availableTerms : ["2"],
-		prereq : "(CVEN1300 + MINE1300 + MMAN1300) * MATH2019 + MATH2018 + MATH2111 * MATH2221 + MATH2011 * MATH2121 + MATH2069 * MATH2121"
-	},
-	{
-	  courseid : "ELEC1111",
-		longname : "Electrical and Telecommunications Engineering",
-		availableTerms : [1,2]
-	},
-	{
-	  courseid : "MATH2019",
-		longname : "Engineering Mathematics 2E",
-		availableTerms : ["1", "3"],
-		prereq : "MATH1231 + MATH1241 + MATH1251"
-	},
-	{
-	  courseid : "MMAN2130",
-		longname : "Design and Manufacturing",
-		availableTerms : ["2", "3"]
-	},
-	{
-	  courseid : "MMAN1300",
-		longname : "Engineering Mechanics",
-		availableTerms : ["Summer", "2", "3"], // Made up
-		prereq : "(MATH1131 + MATH1141) * (PHYS1121 + PHYS1131 + PHYS1141)"
-	},
-	{
-	  courseid : "MMAN2400",
-		longname : "Mechanics of Solids 1",
-		availableTerms : ["1", "2"], // Made up
-		prereq : "(MATH1231 + MATH1241) * (MMAN1300 + CVEN1300 + MINE1300)"
-	}
-]
+// examplePlanArr = [
+// 	{
+// 	  courseid : "ENGG1000",
+// 	  availableTerms : [1,2,3],
+// 		longname : "Engineering Design",
+// 		completed : true
+// 	},
+// 	{
+// 	  courseid : "MATH1131",
+// 	  availableTerms : [1,2,3],
+// 		longname : "Mathematics 1A",
+// 		completed : true
+// 	},
+// 	{
+// 	  courseid : "MATH1231",
+// 	  availableTerms : [1,2,3],
+// 		longname : "Mathematics 1B",
+// 		prereq : "MATH1131 + MATH1141",
+// 		completed : true
+// 	},
+// 	{
+// 	  courseid : "PHYS1121",
+// 		longname : "Physics 1A",
+// 		availableTerms : ["Summer", "1", "2", "3"],
+// 		completed : true
+// 	},
+// 	{
+// 	  courseid : "MMAN2100",
+// 		longname : "Engineering Design 2",
+// 		availableTerms : [3],
+// 		// prereq : "ENGG1000",
+// 		completed : true
+// 	},
+// 	{
+// 	  courseid : "MMAN2300",
+// 		longname : "Engineering Mechanics 2",
+// 		availableTerms : ["2"],
+// 		prereq : "(CVEN1300 + MINE1300 + MMAN1300) * MATH2019 + MATH2018 + MATH2111 * MATH2221 + MATH2011 * MATH2121 + MATH2069 * MATH2121"
+// 	},
+// 	{
+// 	  courseid : "ELEC1111",
+// 		longname : "Electrical and Telecommunications Engineering",
+// 		availableTerms : [1,2]
+// 	},
+// 	{
+// 	  courseid : "MATH2019",
+// 		longname : "Engineering Mathematics 2E",
+// 		availableTerms : ["1", "3"],
+// 		prereq : "MATH1231 + MATH1241 + MATH1251"
+// 	},
+// 	{
+// 	  courseid : "MMAN2130",
+// 		longname : "Design and Manufacturing",
+// 		availableTerms : ["2", "3"]
+// 	},
+// 	{
+// 	  courseid : "MMAN1300",
+// 		longname : "Engineering Mechanics",
+// 		availableTerms : ["Summer", "2", "3"], // Made up
+// 		prereq : "(MATH1131 + MATH1141) * (PHYS1121 + PHYS1131 + PHYS1141)"
+// 	},
+// 	{
+// 	  courseid : "MMAN2400",
+// 		longname : "Mechanics of Solids 1",
+// 		availableTerms : ["1", "2"], // Made up
+// 		prereq : "(MATH1231 + MATH1241) * (MMAN1300 + CVEN1300 + MINE1300)"
+// 	}
+// ]
 
-// addPlanArr(examplePlanArr)
+// // loadPlanArr(examplePlanArr)
 
 
-examplePlanObj = {
-	completedCourses : {
-		"ENGG1000" : {
-			longname : "Engineering Design"
-		},
-		"MATH1131" : {
-			longname : "Mathematics 1A"
-		},
-		"MATH1231" : {
-			longname : "Mathematics 1B",
-			prereq : "MATH1131 + MATH1141"
-		}
-	},
-	plannedCourses : {
-		"PHYS1121" : {
-			longname : "Physics 1A",
-			availableTerms : ["Summer Term", "Term 1", "Term 2", "Term 3"],
-			chosenTerm : "Term 1"
-		},
-		"MMAN2100" : {
-			longname : "Engineering Design 2",
-			availableTerms : ["Term 3"],
-			prereq : "ENGG1000"
-		},
-		"MMAN2300" : {
-			longname : "Engineering Mechanics 2",
-			availableTerms : ["Term 2"],
-			prereq : "(CVEN1300 + MINE1300 + MMAN1300) * MATH2019 + MATH2018 + MATH2111 * MATH2221 + MATH2011 * MATH2121 + MATH2069 * MATH2121"
-		},
-		"ELEC1111" : {
-			longname : "Electrical and Telecommunications Engineering",
-			terms : ["Term 1", "Term 3"]
-		},
-		"MATH2019" : {
-			longname : "Engineering Mathematics 2E",
-			terms : ["Term 1", "Term 3"],
-			prereq : "MATH1231 + MATH1241 + MATH1251"
-		},
-		"MMAN2130" : {
-			longname : "Design and Manufacturing",
-			terms : ["Term 2", "Term 3"]
-		},
-		"MMAN1300" : {
-			longname : "Engineering Mechanics",
-			availableTerms : ["Summer Term", "Term 2", "Term 3"], // Made up
-			prereq : "(MATH1131 + MATH1141) * (PHYS1121 + PHYS1131 + PHYS1141)"
-		},
-		"MMAN2400" : {
-			longname : "Mechanics of Solids 1",
-			terms : ["Term 1", "Term 2"], // Made up
-			prereq : "(MATH1231 + MATH1241) * (MMAN1300 + CVEN1300 + MINE1300)"
-		}
+// examplePlanObj = {
+// 	completedCourses : {
+// 		"ENGG1000" : {
+// 			longname : "Engineering Design"
+// 		},
+// 		"MATH1131" : {
+// 			longname : "Mathematics 1A"
+// 		},
+// 		"MATH1231" : {
+// 			longname : "Mathematics 1B",
+// 			prereq : "MATH1131 + MATH1141"
+// 		}
+// 	},
+// 	plannedCourses : {
+// 		"PHYS1121" : {
+// 			longname : "Physics 1A",
+// 			availableTerms : ["Summer Term", "Term 1", "Term 2", "Term 3"],
+// 			chosenTerm : "Term 1"
+// 		},
+// 		"MMAN2100" : {
+// 			longname : "Engineering Design 2",
+// 			availableTerms : ["Term 3"],
+// 			prereq : "ENGG1000"
+// 		},
+// 		"MMAN2300" : {
+// 			longname : "Engineering Mechanics 2",
+// 			availableTerms : ["Term 2"],
+// 			prereq : "(CVEN1300 + MINE1300 + MMAN1300) * MATH2019 + MATH2018 + MATH2111 * MATH2221 + MATH2011 * MATH2121 + MATH2069 * MATH2121"
+// 		},
+// 		"ELEC1111" : {
+// 			longname : "Electrical and Telecommunications Engineering",
+// 			terms : ["Term 1", "Term 3"]
+// 		},
+// 		"MATH2019" : {
+// 			longname : "Engineering Mathematics 2E",
+// 			terms : ["Term 1", "Term 3"],
+// 			prereq : "MATH1231 + MATH1241 + MATH1251"
+// 		},
+// 		"MMAN2130" : {
+// 			longname : "Design and Manufacturing",
+// 			terms : ["Term 2", "Term 3"]
+// 		},
+// 		"MMAN1300" : {
+// 			longname : "Engineering Mechanics",
+// 			availableTerms : ["Summer Term", "Term 2", "Term 3"], // Made up
+// 			prereq : "(MATH1131 + MATH1141) * (PHYS1121 + PHYS1131 + PHYS1141)"
+// 		},
+// 		"MMAN2400" : {
+// 			longname : "Mechanics of Solids 1",
+// 			terms : ["Term 1", "Term 2"], // Made up
+// 			prereq : "(MATH1231 + MATH1241) * (MMAN1300 + CVEN1300 + MINE1300)"
+// 		}
 
-	}
-}
+// 	}
+// }

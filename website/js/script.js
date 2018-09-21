@@ -33,6 +33,110 @@ db.doc("other/commonInfo").onSnapshot(doc => {
 		console.log("Course list doc NOT found");
 	}
 });
+ 
+/*
+	Cookie functions
+*/
+
+//Writes current data to cookie
+writeCookie = function(){
+	console.log("writeCookie");
+	document.cookie = 'joebanglesJSON='+ saveStateToJSONString() + 
+					';expires=Fri, 31 Dec 2030 23:59:59 GMT;path=/';
+	// document.cookie = "joebanglesJSON=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+};
+
+// Exports state to a json object
+saveStateToJSONString = function() {
+	temp_obj = removeEmpty(removeIgnored(userData));
+	console.log(temp_obj)
+	string = JSON.stringify(temp_obj);
+	console.log("saveStateToJSON");
+	console.log(string);
+	return string
+}
+
+// Turns objects with state : 'ignored' to null
+function removeIgnored(obj) {
+  const o = JSON.parse(JSON.stringify(obj)); // Clone source oect.
+
+  Object.keys(o).forEach(key => {
+    if (o[key] && typeof o[key] === 'object') {
+      o[key] = removeIgnored(o[key]);  // Recurse
+    }
+  });
+
+  if (o.state && o.state === 'ignored') {
+  	return
+  }
+
+  return o; // Return new object.
+}
+
+// Removes null and undeifned values in nested objects
+removeEmpty = function(obj){
+  const o = JSON.parse(JSON.stringify(obj)); // Clone source oect.
+
+  Object.keys(o).forEach(key => {
+    if (o[key] && typeof o[key] === 'object')
+      o[key] = removeEmpty(o[key]);  // Recurse.
+    else if (o[key] === undefined || o[key] === null)
+      delete o[key]; // Delete undefined and null.
+    else
+      o[key] = o[key];  // Copy value.
+  });
+
+  return o; // Return new object.
+};
+
+//Reads subject data from cookie
+readCookie = function(){
+	console.log("readCookie");
+	console.log("All cookies:", document.cookie);
+	let cookieData = document.cookie.split(';');
+	for (let i in cookieData) {
+		thisCookie = cookieData[i];
+		console.log("This cookie", thisCookie)
+		if (thisCookie.match(/joebanglesJSON=/)) {
+			thisCookie = thisCookie.replace('joebanglesJSON=', ''); // Remove name
+			thisCookie = thisCookie.replace(/;.*/g,'');
+			thisCookie = JSON.parse(thisCookie);
+			console.log("This cookie data:",thisCookie);
+			loadUIFromJSON(thisCookie);
+		} else {
+			console.log('not match');
+		}
+	}
+};
+
+// Loads state from a json object
+loadUIFromJSON = function(data) {
+	console.log("loadUIFromJSON", data)
+	userData = data;
+
+	// Load specs for specTable
+
+	// Load special courses
+
+	// Load courses to DragDrop
+	loadDragDropWithState(userData.courses);
+}
+
+refresh = function() {
+	writeCookie();
+	readCookie();
+}
+
+// Load cookie when page is ready
+$(document).ready(function(){
+	readCookie();
+	reactivateTooltips();
+});
+
+//Save cookie on page unload
+$(window).on('unload', function() {
+	writeCookie();
+});
 
 /*
  * Adding functions
@@ -120,9 +224,9 @@ function dragDropAddRow() {
 	$('#dragDropTable tbody').append(
     '<tr class="year" data-year="' + year + '">'+
       '<th scope="row">' + year + '</th>'+
-      '<td class="p-0"><div class="draggable-container term" data-term="1"></div></td>'+
-      '<td class="p-0"><div class="draggable-container term" data-term="2"></div></td>'+
-      '<td class="p-0"><div class="draggable-container term" data-term="3"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term1" class="draggable-container term" data-term="1"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term2" class="draggable-container term" data-term="2"></div></td>'+
+      '<td class="p-0"><div id="year' + year + 'term3" class="draggable-container term" data-term="3"></div></td>'+
     '</tr>'
 	);
 }

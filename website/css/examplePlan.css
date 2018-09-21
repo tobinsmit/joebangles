@@ -1,3 +1,7 @@
+.draggable-container {
+  min-height: 5px;
+}
+
 .year {
   /*min-height: 100px;*/
 }
@@ -16,6 +20,7 @@
 .course {
   /*min-height: 100px;*/
   /*max-width: 100px;*/
+  font-size: 12pt;
   padding-left: 8px;
   padding-right: 8px;
   cursor: pointer;
@@ -36,6 +41,3 @@
   opacity: 0.9;
 }
 
-.box {
-  border:3px solid black; 
-}
