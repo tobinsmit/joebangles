@@ -18,54 +18,66 @@
 
   </head>
 
-  <body>
+  <body style="background-color: #A6F0FF;">
+
+    <div class="row p-4" style="background-color:#A6F0FF;">
+      <div class="col-8 offset-2 col-lg-8 offset-lg-2 text-center">
+        <h1 id="title">joebangles</h1>
+        <p>The UNSW course planner for trimesters</p>
+      </div>
+      <div class="col-2 col-lg-1">
+        <button type="button" class="btn btn-secondary float-right" id="reset">Reset</button>
+      </div>
+    </div>
+
     <!-- Step 1 -->
 
-    <div class="background" style="background-color:#3596B2;">
-
-      <h1 class="text-center mt-3 mb-4" id="title">joebangles</h1>
-
-      <div class="container">
-
-        <div class="form-group">
-          <label for="specialisationTF">1. Add your specialisations (majors) (Use the UNSW Handbook to find your specialisation code)</label>
-          <div class="input-group mb-3">
-
-            <div class="input-group-prepend">
-              <span class="input-group-text">https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/</span>
-            </div>
-
-            <input type="text" class="form-control" id="specialisationTF" placeholder="MECHAH" required="" value="MECHAH">
-
+    <div class="row p-4" style="background-color:#A6F0FF;">
+      <div class="col-lg-2 offset-lg-1 mb-3 text-left">
+        <h1>Step 1</h1>
+        <p>Import specialisations (eg honours, majors, minors. Use the UNSW Handbook)</p>
+      </div>
+      <div class="col-lg-8 mb-3">
+        <!-- <div class="form-group"> -->
+          <label>Specialisation</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="specialisationTF" placeholder="Eg: MTRNAH">
             <div class="input-group-append">
               <button type="button" class="btn btn-primary" id="addSpec">Add</button>
             </div>
           </div>
-        </div>
-        <button type="button" class="btn btn-secondary" id="reset">Reset</button>
-        Do not use the <span class="fa fa-times"></span> to remove courses and specialisations, use this reset instead.
+          <small id="passwordHelpBlock" class="form-text" style="color: black;">
+            To find your spec visit <a href="https://www.handbook.unsw.edu.au/search?ct=aos&study_level=ugrd">here</a>
+            <br>Note: Does not suppoort postgrad specialisations yet
+          </small>
+
+          <br>
+          <p id="specProgressBanner"></p>
+
+
+        <!-- </div> -->
       </div>
     </div>
 
     <!-- Step 2 -->
 
-    <div class="background" style="background-color:#A4EAFF;min-height: 300px;">
-      <div class="container">
+    <div class="row p-4" style="background-color:#73E8FF;">
+      <div class="col-lg-2 offset-lg-1 mb-3 text-left">
+        <h1>Step 2</h1>
+        <p>Pick subjects for each specialisation</p>
+        <p class="mb-0"><span class="fa fa-check"></span> = completed</p>
+        <p class="mb-0"><span class="far fa-calendar-alt"></span> = planning to do</p>
+        <p class="mb-0"><span class="fa fa-ban"></span> = not doing</p>
 
-        <span>2. Below, select:
-          <span class="fa fa-check"></span> I've completed this course, &nbsp;
-          <span class="far fa-calendar-alt"></span> I'm planning on completing this course, &nbsp;
-          <span class="fa fa-ban"></span> I won't be completing this course
-        </span>
-        <br><br>
-
+      </div>
+      <div class="col-lg-8">
         <div class="row">
-          <div class="col-3">
+          <div class="col-md-3 mb-3">
             <!-- This table has to be on one line, function removeSpec does not like whitespace -->
             <table  id="specialisationsTable"><tr><td><b>Specialisations</b></td></tr></table>
           </div>
           <!-- style="height:500px;overflow:auto;" -->
-          <div class="col">
+          <div class="col-md-9 mb-3">
             <h2 id="specDisplayTitle">Add a Specialisation</h2>
             <div class="accordian" id="specDisplay"></div>
           </div>
@@ -75,13 +87,14 @@
 
     <!-- Step 3 -->
 
-    <div class="background" style="background-color:#7EE2FF;">
-      <div class="container" style="min-height: 300px;">
-
-        <span>3. Below, add any other courses you need to complete such as general education or other electives. Select the checkboxes for courses you have already completed.</span>
-        <br><br>
-
-        <label for="courseTF">Course</label>
+    <div class="row p-4" style="background-color:#A6F0FF;">
+      <div class="col-lg-2 offset-lg-1 mb-3 text-left">
+        <h1>Step 3</h1>
+        <p>Add extra subjects like gen eds or unlisted electives</p>
+        <p>Remember to tick completed or planning</p>
+      </div>
+      <div class="col-lg-8 mb-3">
+        <label for="courseTF">Search Courses</label>
         <div class="input-group" data-toggle="tooltip" data-placement="top">
           <input id="courseAddInput" type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Enter course here">
           <span class="input-group-append">
@@ -105,8 +118,12 @@
 
     <!-- Step 4 -->
 
-    <div class="background" style="background-color:#3596B2;">
-      <div class="container text-center">
+    <div class="row p-4 text-center" style="background-color:#73E8FF;">
+      <div class="col-lg-2 offset-lg-1 mb-3 text-left">
+        <h1>Step 4</h1>
+        <p>Drag and Drop courses</p>
+      </div>
+      <div class="col-lg-8 mb-3">
         <!-- Top row of containers  -->
         <button class="btn btn-warning mb-3" onclick="refresh()">Load / Refresh</button>
         <div class="card mb-3">
@@ -119,7 +136,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-3 mb-3">
+          <div class="col-lg-3 mb-3">
             <div class="card">
               <div class="card-header">
                 Unassigned
@@ -131,7 +148,7 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-9">
+          <div class="col-lg-9">
             <div class="card">
               <table id="dragDropTable" class="table mb-0" style="table-layout: fixed;">
                 <thead>
@@ -173,6 +190,7 @@
 
 
       </div>
+        <p class="mt-5 mx-auto">Made by two students who thought there was little help with trimesters</p>
     </div>
 
 
