@@ -77,5 +77,5 @@ function scrapeDegree(specid) {
 };
 
 function updateSpecProgressBanner(message, addClass) {
-  $("#specProgressBanner").html("<p class='" + addClass + "'>" + message + "</p>");
+  $("#specProgressBanner").html("<p class='mt-4 mb-0 " + addClass + "'>" + message + "</p>");
 }
