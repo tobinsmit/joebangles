@@ -213,6 +213,7 @@ $('#addSpec').on('click', function() {
 function loadSpec(specID){
 
 	$('#specDisplayTitle').html('Loading...');
+	updateSpecProgressBanner("Checking database");
 
 	// If new spec
 	if(userData.specs.indexOf(specID) == -1){
@@ -220,10 +221,6 @@ function loadSpec(specID){
 		userData.specs.push(specID);
 
 	} 
-
-	// Empty text field
-	$('#specialisationTF').val("");
-	$('#specialisationTF').attr("placeholder", "");
 
 	$('#specialisationsTable').append(
 		'<tr><td><span onclick="fillSpecDisplay(&#39'+specID+'&#39)" class="internal-link">'+specID+'</span></td>'+
@@ -234,8 +231,10 @@ function loadSpec(specID){
 }
 
 $('#reset').on('click', function(){
-	userData = {specs:[], courses:{}};
-	refresh();
+	if (confirm("Are you sure you want to clear all of the data?")) {
+		userData = {specs:[], courses:{}};
+		refresh();
+	}
 });
 
 // addSpecialCourse Click
@@ -538,6 +537,7 @@ function fillSpecDisplay(specID) {
 
 			// Set Title
 			$('#specDisplayTitle').html(doc.data().longname);
+			updateSpecProgressBanner("Success", "text-success");
 
 			// Reset div
 			$('#specDisplay').html("");
@@ -678,7 +678,7 @@ function fillSpecDisplay(specID) {
 	});
 }
 
-removeSpec = function(removeSpecID) {
+removeSpecObj = function(removeSpecID) {
 	deleteCourses = {};
 
 	// Set remove value for subjects in removeSpecID to true
