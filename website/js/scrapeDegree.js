@@ -20,7 +20,7 @@ function scrapeDegree(specid) {
 
     if (doc["longname"] === "") {
       console.log("No title found. Assumed error page");
-      updateSpecProgressBanner("Page not found on the handbook", "text-danger");
+      updateSpecProgressBanner("Page " + specid + " not found on the handbook <br><a href='https://www.handbook.unsw.edu.au/undergraduate/specialisations/2019/" + specid + "'>visit</a>", "text-danger");
       return
     }
 
