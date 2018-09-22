@@ -26,6 +26,7 @@
   cursor: pointer;
   margin: 2px;
   background-color: lightgray;
+  border-radius: 100px;
 }
 .course-invalid{
   background-color: red;
