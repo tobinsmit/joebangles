@@ -47,6 +47,16 @@ drake.on('drop', function(el, target, source, sibling){
 
 });
 
+// Detect invalid courses on load
+$(document).ready( function() {
+  $('.course').each( function() {
+    if (checkIfValid(this, $(this).parent())) {
+      $(this).removeClass('course-invalid');
+    } else {
+      $(this).addClass('course-invalid');
+    }
+  })
+})
 
 // Prevent user scrolling when dragging
 var listener = function(e) {
@@ -164,8 +174,14 @@ loadDragDropSplitObj = function(data) {
 loadDragDropWithState = function(data) {
 	clearDragDrop();
 	console.log("loadDragDropWithState", data);
+  let years = 3;
 	for (let courseid in data) {
 		data[courseid].courseid = courseid.replace(/'/g,'');
+    if (data[courseid].chosenYear > years) {
+      console.log(data[courseid].chosenYear)
+      dragDropAddRow();
+      years++;
+    }
 
 		if (data[courseid].state === "completed") {
 			addCourseDragDrop(data[courseid], '#completed');
@@ -196,8 +212,10 @@ addCourseDragDrop = function(course, location) {
 			// +(course.prereq ? 'Prereq: '+ (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/, ' and ') : '')
 
 			// Show none fields
-			+'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
-			+'<br>'
+      +'<b>' + course.longname + '</b>'
+      +'<br>'
+      +'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
+      +'<br>'
 			+'Prereq: ' + (course.prereq ? (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/g, ' and ') : 'none')
 
 			+'">'+ course.courseid +'</div>';
