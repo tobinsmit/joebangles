@@ -205,15 +205,14 @@ addCourseDragDrop = function(course, location) {
 			+(course.availableTerms ? ' data-available-terms="[' + course.availableTerms + ']"' : '')
 			+(course.prereq ? '" data-prereq="' + course.prereq + '"' : '')
 			+' data-original-title="'
-
+      +'<b>' + course.longname + '</b>'
+      +'<br>'
 			// Dont show none fields
 			// +(course.availableTerms ? 'Terms: '+ (course.availableTerms + '').replace(/( )?Term( )?/g, '') : '')
 			// +(course.prereq && course.availableTerms ? '<br>' : '')
 			// +(course.prereq ? 'Prereq: '+ (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/, ' and ') : '')
 
 			// Show none fields
-      +'<b>' + course.longname + '</b>'
-      +'<br>'
       +'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
       +'<br>'
 			+'Prereq: ' + (course.prereq ? (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/g, ' and ') : 'none')
