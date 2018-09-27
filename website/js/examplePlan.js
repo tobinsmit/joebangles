@@ -94,11 +94,18 @@ updateCourseData = function(el) {
     console.error("DropDrop readDragDrop: Unexpected location for course", el);
   }
 }
-
 checkIfValid = function(el, target) {
+  if (checkIfValidWithError(el,target) == "") {
+    return true
+  } else {
+    return false
+  }
+}
+
+checkIfValidWithError = function(el, target) {
 	// Accept unassigned
 	if ($(target).hasClass('notInvalid')){
-		return true
+		return ""
 	}
 
 	// Check course is available in sem
@@ -106,7 +113,7 @@ checkIfValid = function(el, target) {
 	prereq = $(el).data("prereq") || "1";
 	targetTerm = $(target).data('term');
 	if (!availableTerms.includes(targetTerm)) {
-		return false
+		return "Bad Term"
 	}
 
 	// Check prereq is satisfied
@@ -134,10 +141,10 @@ checkIfValid = function(el, target) {
 	prereq = prereq.replace(/[A-Z]{4}[0-9]{4}/g,"0");
 	prereq = eval(prereq)
 	if (!prereq) {
-		return 0
+		return "Prereq"
 	}
   
-	return true
+	return ""
 }
 
 clearDragDrop = function() {
