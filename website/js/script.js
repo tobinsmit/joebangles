@@ -126,11 +126,16 @@ loadUI = function() {
 	// Clear everything first
 	$('#specialisationsTable').html('<tr><td><b>Specialisations</b></td></tr>');
 
-	$('#coursesTable').html('<tr>'+
-              					'<td style="width:100px;"></td>'+
-              					'<td><b>Course</b></td>'+
-              					'<td style="width:165px;"><b>2019 Terms</b></td>'+
-            				'</tr>');
+	$('#coursesTable').html(
+		'<tr>'+
+    	'<td style="width:100px;"></td>'+
+    	'<td><b>Course</b></td>'+
+			'<td style="width:165px;">'+
+				'<b>2019 Terms </b>'+
+				'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These are the available terms read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
+			'</td>'+
+    '</tr>'
+  );
 
 	$('#specDisplay').html("");
 	$('#specDisplayTitle').html("Add a Specialisation");
@@ -149,6 +154,8 @@ loadUI = function() {
 
 	// Load courses to DragDrop
 	loadDragDropWithState(userData.courses);
+
+	reactivateTooltips();
 }
 
 refreshOLD = function() {
@@ -247,6 +254,29 @@ $('#addCourse').on('click', function() {
 	}
 
 });
+
+// Copy link to clipboard in step 5
+$("#copyLinkBut").on('click', function() {
+  $("#copyLinkBut").html('<span class="far fa-clipboard-check"></span>');
+  var copyTest = document.queryCommandSupported('copy');
+  if (copyTest === true) {
+    el = document.getElementById('copyLinkField')
+    el.select();
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'Copied!' : 'Whoops, not copied!';
+      $(this).attr('data-original-title', msg).tooltip('show');
+    } catch (err) {
+      console.log('Oops, unable to copy');
+    }
+    // Remove selection
+    window.getSelection().removeAllRanges()
+  } else {
+    // Fallback if browser doesn't support .execCommand('copy')
+    window.prompt("Copy to clipboard: Ctrl+C or Command+C, Enter", "joebangles.tobinsmit.com");
+  }
+});
+
 
 function dragDropAddRow() {
 	year = $('.year').length + 1;
@@ -587,9 +617,12 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 				el_row = document.createElement('tr');
 				el_row.innerHTML = 
 					'<table class="degreeCoursesTable"><tr>'+
-         		   		'<td style="width:80px;"></td>'+
-         		   		'<td><b>Course</b></td>'+
-           			 	'<td style="width:165px;"><b>2019 Terms</b></td>'+
+         		'<td style="width:80px;"></td>'+
+         		'<td><b>Course</b></td>'+
+           	'<td style="width:165px;">'+
+           		'<b>2019 Terms </b>'+
+           		'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These are the available terms read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
+           	'</td>'+
 					'</tr>';
 				el_table.appendChild(el_row);
 
@@ -703,6 +736,7 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 			}
 		} 
 
+		reactivateTooltips();
 	});
 }
 

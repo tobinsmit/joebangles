@@ -20,13 +20,18 @@
 
   <body style="background-color: #A6F0FF;">
 
+    <!-- Email suggestion banner -->
+
     <div class="row pt-3 mx-0" style="background-color:#FFFF00;">
       <div class="col-8 offset-2 col-lg-8 offset-lg-2 text-center">
         <p>joebangles is new and we want to improve it! If you encounter any errors, mistakes or have suggestions please <a href="mailto:joebanglesunsw@gmail.com?Subject=Issue" target="_top">email us</a> </p>
+        <!-- <p>Oh hello! joebangles is as fresh as berries rn and we want to get rid of all the needles! If you encounter any errors or mistakes please <a href="mailto:joebanglesunsw@gmail.com?Subject=Issue" target="_top">email us</a> </p> -->
       </div>
     </div>
 
-    <div class="row p-4 mx-0" style="background-color:#A6F0FF;">
+    <!-- Title div -->
+
+    <div class="row p-4 mx-0">
       <div class="col-8 offset-2 col-lg-8 offset-lg-2 text-center">
         <h1 id="title">joebangles</h1>
         <p>The UNSW course planner for trimesters</p>
@@ -38,7 +43,7 @@
 
     <!-- Step 1 -->
 
-    <div class="row p-4 mx-0" style="background-color:#A6F0FF;">
+    <div class="row p-4 mx-0">
       <div class="col-lg-2 offset-lg-1 mb-3 text-left">
         <h1>Step 1</h1>
         <p>Import specialisations (eg honours, majors, minors. Use the UNSW Handbook)</p>
@@ -53,9 +58,9 @@
             </div>
           </div>
           <small id="passwordHelpBlock" class="form-text" style="color: black;">
-            To find your spec visit <a href="https://www.handbook.unsw.edu.au/search?ct=aos&study_level=ugrd">here</a>
+            To find your spec visit <a href="https://www.handbook.unsw.edu.au/search?ct=aos&study_level=ugrd" target="_blank">here</a>
             <br>Example: Mechanical Engineering = MECHAH <b>NOT</b> MECH3707
-            <br>Note: Requires a major and does not suppoort postgrad specialisations yet
+            <br>Note: Requires a major and does not support postgrad specialisations yet
           </small>
           <div id="specProgressBanner"></div>
 
@@ -91,7 +96,7 @@
 
     <!-- Step 3 -->
 
-    <div class="row p-4 mx-0" style="background-color:#A6F0FF;">
+    <div class="row p-4 mx-0">
       <div class="col-lg-2 offset-lg-1 mb-3 text-left">
         <h1>Step 3</h1>
         <p>Add extra subjects like gen eds or unlisted electives</p>
@@ -192,12 +197,29 @@
             </div>
           </div>
         </div>
-
-
       </div>
-        <p class="mt-5 mx-auto">Made by two students who needed some help with trimesters</p>
     </div>
 
+    <!-- Step 5 -->
+    
+    <div class="row p-4 mx-0">
+      <div class="col-lg-2 offset-lg-1 mb-3 text-left">
+        <h1>Step 5</h1>
+      </div>
+      <div class="col-lg-8 mb-3">
+        <h2>Share it with your mates who need help</h2>
+        <div class="form-inline">
+          <div class="input-group mb-2 pr-auto">
+            <input id="copyLinkField" type="text" class="form-control" id="inlineFormInputGroup" value="joebangles.tobinsmit.com" readonly>
+            <div class="input-group-append">
+              <button id="copyLinkBut" class="btn btn-secondary" type="button" data-original-title="Copy to clipboard" data-toggle="tooltip"><span class="far fa-copy"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="pb-4 my-0 mx-auto text-center">Made by two students who needed some help with trimesters</p>
 
     <!--  ================================================== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
