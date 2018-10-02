@@ -26,8 +26,12 @@ $input.typeahead({
   fitToElement: true
 });
 
-db.doc("other/commonInfo").onSnapshot(doc => {
+db.doc("other/commonInfo").get().then(doc => {
 	if (doc.exists) {
+		// Increment use counter
+		previousUsecases = doc.data().usecases || 0;
+		db.doc("other/commonInfo").set({usecases: previousUsecases + 1},{merge:true});
+
 		//console.log("Course list doc found");
 		$input.data('typeahead').source = doc.data().courseList;
 	} else {
@@ -382,20 +386,22 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 
 		var isSuccess = false;
 
-		db.doc("courses/" + courseID).onSnapshot(doc => {
+		db.doc("courses/" + courseID).get().then(doc => {
 
 			if (doc.exists) {
+				// Increment use counter
+				previousUsecases = doc.data().usecases || 0;
+				db.doc("courses/" + courseID).set({usecases: previousUsecases + 1},{merge:true});
+
 
 				userData.courses["'"+courseID+"'"] = 	{
-
-													longname : doc.data().longname,
-													availableTerms : null,
-													chosenTerm : null,
-													chosenYear : null,
-													prereq : null,
-													state : defaultState,
-
-														};
+					longname : doc.data().longname,
+					availableTerms : null,
+					chosenTerm : null,
+					chosenYear : null,
+					prereq : null,
+					state : defaultState,
+				};
 
 				if (isSpecial) {
 					userData.courses["'"+courseID+"'"].isSpecial = isSpecial;
@@ -573,8 +579,11 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 	var defaultState;
 	var isSuccess = false;
 
-	db.doc("degrees/" + specID).onSnapshot(doc => {
+	db.doc("degrees/" + specID).get().then(doc => {
 		if (doc.exists) {
+			// Increment use counter
+			previousUsecases = doc.data().usecases || 0;
+			db.doc("degrees/" + specID).set({usecases: previousUsecases + 1},{merge:true});
 
 			// Set Title
 			$('#specDisplayTitle').html(doc.data().longname);
