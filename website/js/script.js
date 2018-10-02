@@ -126,11 +126,16 @@ loadUI = function() {
 	// Clear everything first
 	$('#specialisationsTable').html('<tr><td><b>Specialisations</b></td></tr>');
 
-	$('#coursesTable').html('<tr>'+
-              					'<td style="width:100px;"></td>'+
-              					'<td><b>Course</b></td>'+
-              					'<td style="width:165px;"><b>2019 Terms</b></td>'+
-            				'</tr>');
+	$('#coursesTable').html(
+		'<tr>'+
+    	'<td style="width:100px;"></td>'+
+    	'<td><b>Course</b></td>'+
+			'<td style="width:165px;">'+
+				'<b>2019 Terms </b>'+
+				'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These are the available terms read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
+			'</td>'+
+    '</tr>'
+  );
 
 	$('#specDisplay').html("");
 	$('#specDisplayTitle').html("Add a Specialisation");
@@ -149,6 +154,8 @@ loadUI = function() {
 
 	// Load courses to DragDrop
 	loadDragDropWithState(userData.courses);
+
+	reactivateTooltips();
 }
 
 refreshOLD = function() {
@@ -594,9 +601,12 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 				el_row = document.createElement('tr');
 				el_row.innerHTML = 
 					'<table class="degreeCoursesTable"><tr>'+
-         		   		'<td style="width:80px;"></td>'+
-         		   		'<td><b>Course</b></td>'+
-           			 	'<td style="width:165px;"><b>2019 Terms</b></td>'+
+         		'<td style="width:80px;"></td>'+
+         		'<td><b>Course</b></td>'+
+           	'<td style="width:165px;">'+
+           		'<b>2019 Terms </b>'+
+           		'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These are the available terms read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
+           	'</td>'+
 					'</tr>';
 				el_table.appendChild(el_row);
 
@@ -710,6 +720,7 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 			}
 		} 
 
+		reactivateTooltips();
 	});
 }
 
