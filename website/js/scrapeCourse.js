@@ -72,7 +72,7 @@ function scrapeCourse(courseid) {
     db.doc("courses/" + courseid).set(doc, { merge: true })
     .then(function() {
       console.log("document uploaded");
-      updateCourseProgressBanner("Document uploaded", "text-success");
+      updateCourseProgressBanner("Success", "text-success");
     })
 
   }) // End request
@@ -102,6 +102,6 @@ function cleanPrereqExp(exp) {
 
 
 function updateCourseProgressBanner(message, addClass) {
-  $("#courseProgressBanner").html("<p class='" + addClass + "'>" + message + "</p>");
+  $("#courseProgressBanner").html("<small class='" + addClass + "'>" + message + "</small>");
 }
 

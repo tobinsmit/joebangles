@@ -231,6 +231,8 @@ $('#reset').on('click', function(){
 
 // addSpecialCourse Click
 $('#addCourse').on('click', function() {
+
+	updateCourseProgressBanner("Checking database...");
 	
 	courseid = $('#courseAddInput').val().substring(0,8);
 	courselongname = $('#courseAddInput').val().substring(11);
@@ -240,6 +242,8 @@ $('#addCourse').on('click', function() {
 
 	if(typeof userData.courses["'"+courseid+"'"] === 'undefined'){
 		loadCourse(courseid, true, "planned", true);
+	} else {
+		updateCourseProgressBanner("Course already offered in 1 or more specialisations.", "text-danger");
 	}
 
 });
@@ -320,11 +324,21 @@ function removeSpecialCourse(courseID) {
 	var table = document.getElementById('coursesTable');
 	console.log(table.childNodes);
 
-	// Remove element from table
-	//table.removeChild(table.childNodes[]);
+	for(var i in table.childNodes){
 
-	// Remove spec from specList
-	delete userData.courses["'"+courseID+"'"];
+		node = table.childNodes[i];
+
+		if($(node.childNodes[1]).html().startsWith(courseID)){
+			// Remove element from table
+			table.removeChild(node);
+
+			// Remove spec from userData
+			delete userData.courses["'"+courseID+"'"];
+
+			return;
+		}
+	}
+
 }
 
 // courseID
@@ -400,6 +414,8 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 
 		setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state, true);
 		setTerms(courseID);
+
+		updateCourseProgressBanner("Success", "text-success");
 
 	}
 }
@@ -532,11 +548,11 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 
 			// Set Title
 			$('#specDisplayTitle').html(doc.data().longname);
-			updateSpecProgressBanner("Success", "text-success");
 			isSuccess = true;
 
 			// Reset div
 			$('#specDisplay').html("");
+			updateSpecProgressBanner("Success", "text-success");
 
 			courseLevels = doc.data().courseLevels;
 
