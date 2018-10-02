@@ -132,7 +132,7 @@ loadUI = function() {
     	'<td><b>Course</b></td>'+
 			'<td style="width:165px;">'+
 				'<b>2019 Terms </b>'+
-				'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These avilable terms are read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
+				'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These are the available terms read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
 			'</td>'+
     '</tr>'
   );
@@ -605,7 +605,7 @@ function fillSpecDisplay(specID, fromLoadSpec) {
          		'<td><b>Course</b></td>'+
            	'<td style="width:165px;">'+
            		'<b>2019 Terms </b>'+
-           		'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These avilable terms are read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
+           		'<span class="fa fa-question-circle" data-toggle="tooltip" data-original-title="These are the available terms read from the handbook. Sometimes the handbook is wrong and you can correct them here."></span>'+
            	'</td>'+
 					'</tr>';
 				el_table.appendChild(el_row);
