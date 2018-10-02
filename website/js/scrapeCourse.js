@@ -102,6 +102,6 @@ function cleanPrereqExp(exp) {
 
 
 function updateCourseProgressBanner(message, addClass) {
-  $("#courseProgressBanner").html("<small class='" + addClass + "'>" + message + "</small>");
+  $("#courseProgressBanner").html("<small class='mb-1 " + addClass + "'>" + message + "</small>");
 }
 
