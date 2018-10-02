@@ -47,6 +47,16 @@ drake.on('drop', function(el, target, source, sibling){
 
 });
 
+// Detect invalid courses on load
+$(document).ready( function() {
+  $('.course').each( function() {
+    if (checkIfValid(this, $(this).parent())) {
+      $(this).removeClass('course-invalid');
+    } else {
+      $(this).addClass('course-invalid');
+    }
+  })
+})
 
 // Prevent user scrolling when dragging
 var listener = function(e) {
@@ -84,11 +94,18 @@ updateCourseData = function(el) {
     console.error("DropDrop readDragDrop: Unexpected location for course", el);
   }
 }
-
 checkIfValid = function(el, target) {
+  if (checkIfValidWithError(el,target) == "") {
+    return true
+  } else {
+    return false
+  }
+}
+
+checkIfValidWithError = function(el, target) {
 	// Accept unassigned
 	if ($(target).hasClass('notInvalid')){
-		return true
+		return ""
 	}
 
 	// Check course is available in sem
@@ -96,7 +113,7 @@ checkIfValid = function(el, target) {
 	prereq = $(el).data("prereq") || "1";
 	targetTerm = $(target).data('term');
 	if (!availableTerms.includes(targetTerm)) {
-		return false
+		return "Bad Term"
 	}
 
 	// Check prereq is satisfied
@@ -124,10 +141,10 @@ checkIfValid = function(el, target) {
 	prereq = prereq.replace(/[A-Z]{4}[0-9]{4}/g,"0");
 	prereq = eval(prereq)
 	if (!prereq) {
-		return 0
+		return "Prereq"
 	}
   
-	return true
+	return ""
 }
 
 clearDragDrop = function() {
@@ -164,8 +181,14 @@ loadDragDropSplitObj = function(data) {
 loadDragDropWithState = function(data) {
 	clearDragDrop();
 	console.log("loadDragDropWithState", data);
+  let years = 3;
 	for (let courseid in data) {
 		data[courseid].courseid = courseid.replace(/'/g,'');
+    if (data[courseid].chosenYear > years) {
+      console.log(data[courseid].chosenYear)
+      dragDropAddRow();
+      years++;
+    }
 
 		if (data[courseid].state === "completed") {
 			addCourseDragDrop(data[courseid], '#completed');
@@ -189,15 +212,16 @@ addCourseDragDrop = function(course, location) {
 			+(course.availableTerms ? ' data-available-terms="[' + course.availableTerms + ']"' : '')
 			+(course.prereq ? '" data-prereq="' + course.prereq + '"' : '')
 			+' data-original-title="'
-
+      +'<b>' + course.longname + '</b>'
+      +'<br>'
 			// Dont show none fields
 			// +(course.availableTerms ? 'Terms: '+ (course.availableTerms + '').replace(/( )?Term( )?/g, '') : '')
 			// +(course.prereq && course.availableTerms ? '<br>' : '')
 			// +(course.prereq ? 'Prereq: '+ (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/, ' and ') : '')
 
 			// Show none fields
-			+'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
-			+'<br>'
+      +'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
+      +'<br>'
 			+'Prereq: ' + (course.prereq ? (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/g, ' and ') : 'none')
 
 			+'">'+ course.courseid +'</div>';

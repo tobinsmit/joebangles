@@ -244,6 +244,29 @@ $('#addCourse').on('click', function() {
 
 });
 
+// Copy link to clipboard in step 5
+$("#copyLinkBut").on('click', function() {
+  $("#copyLinkBut").html('<span class="far fa-clipboard-check"></span>');
+  var copyTest = document.queryCommandSupported('copy');
+  if (copyTest === true) {
+    el = document.getElementById('copyLinkField')
+    el.select();
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'Copied!' : 'Whoops, not copied!';
+      $(this).attr('data-original-title', msg).tooltip('show');
+    } catch (err) {
+      console.log('Oops, unable to copy');
+    }
+    // Remove selection
+    window.getSelection().removeAllRanges()
+  } else {
+    // Fallback if browser doesn't support .execCommand('copy')
+    window.prompt("Copy to clipboard: Ctrl+C or Command+C, Enter", "joebangles.tobinsmit.com");
+  }
+});
+
+
 function dragDropAddRow() {
 	year = $('.year').length + 1;
 	$('#dragDropTable tbody').append(
