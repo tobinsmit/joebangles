@@ -67,6 +67,8 @@ function scrapeDegree(specid) {
     db.doc("degrees/" + specid).set(doc, { merge: true })
     .then(function() {
       console.log("document uploaded");
+      updateSpecProgressBanner("Success", "text-success");
+      loadSpec(specid);
     })
 
   }) // End request

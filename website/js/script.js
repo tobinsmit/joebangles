@@ -421,7 +421,7 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 
 			} else {
 
-				scrapeCourse(courseID);
+				scrapeCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable);
 
 			}
 		});

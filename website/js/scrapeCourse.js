@@ -1,4 +1,4 @@
-function scrapeCourse(courseid) {
+function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable) {
 
   console.log("requesting website. courseid: " + courseid);
   updateCourseProgressBanner("Downloading handbook page");
@@ -73,6 +73,7 @@ function scrapeCourse(courseid) {
     .then(function() {
       console.log("document uploaded");
       updateCourseProgressBanner("Success", "text-success");
+      loadCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable);
     })
 
   }) // End request
