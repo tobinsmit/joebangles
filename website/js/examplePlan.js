@@ -207,6 +207,12 @@ loadDragDropWithState = function(data) {
 
 addCourseDragDrop = function(course, location) {
 
+	var prereqString = "";
+
+	if(typeof course.prereqString !== 'undefined'){
+		prereqString = course.prereqString;
+	}
+
 	html = 
 			'<div id="' + course.courseid + '" class="draggable course" data-toggle="tooltip" data-html="true"'
 			+(course.availableTerms ? ' data-available-terms="[' + course.availableTerms + ']"' : '')
@@ -222,7 +228,7 @@ addCourseDragDrop = function(course, location) {
 			// Show none fields
       +'Terms: ' + (course.availableTerms ? course.availableTerms : 'none')
       +'<br>'
-			+'Prereq: ' + (course.prereq ? (course.prereq + '').replace(/\+/g, ' or ').replace(/\*/g, ' and ') : 'none')
+			+ prereqString
 
 			+'">'+ course.courseid +'</div>';
 	

@@ -417,6 +417,11 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 					userData.courses["'"+courseID+"'"].prereq = doc.data().prereqs[0].exp;
 				}
 
+				if(typeof doc.data().prereqs[0] !== 'undefined'){
+
+					userData.courses["'"+courseID+"'"].prereqString = doc.data().prereqs[0].label;
+				}
+
 				loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable);
 
 			} else {
@@ -516,7 +521,7 @@ function setStatusIcon(courseID, state, initialLoad){
 
 	if(p.attr('class').startsWith('s') && !(initialLoad && state == "ignored")){
 
-		var elList = $('.'+p.attr('class').substring(0,4));
+		var elList = $('.'+p.attr('class').substring(0,5));
 
 		for(var j=2; j < elList.length+2; j+=3){
 			var id = $(elList[j]).attr('id').substring(0,8);
@@ -678,9 +683,9 @@ function fillSpecDisplay(specID, fromLoadSpec) {
     					el_row = document.createElement('tr');
 						el_row.innerHTML =
 							'<td>'+
-								'<span id="'+courseid+'_c" class="set'+i_optionSet+' fa fa-check icon"></span>&ensp;'+
-           						'<span id="'+courseid+'_p" class="set'+i_optionSet+' far fa-calendar-alt icon"></span>&ensp;'+
-          						'<span id="'+courseid+'_i" class="set'+i_optionSet+' fa fa-ban icon"></span>'+
+								'<span id="'+courseid+'_c" class="set'+i_optionSet+i_level+' fa fa-check icon"></span>&ensp;'+
+           						'<span id="'+courseid+'_p" class="set'+i_optionSet+i_level+' far fa-calendar-alt icon"></span>&ensp;'+
+          						'<span id="'+courseid+'_i" class="set'+i_optionSet+i_level+' fa fa-ban icon"></span>'+
 							'</td>'+
 							'<td class="degreeCourses-nameTF">'+courseid+' - '+courseObj.longname+'</td>'+
 							'<td>'+
@@ -698,10 +703,15 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 
     				}
 				}
+
 				el_cardBody.appendChild(el_table);
 				el_card.appendChild(el_cardHeader);
 				el_card.appendChild(el_cardBody);
-				document.getElementById("specDisplay").appendChild(el_card);
+
+				// Only add a card if it actually has stuff in it
+				if(el_card.childNodes[1].childNodes[0].childNodes.length != 1){
+					document.getElementById("specDisplay").appendChild(el_card);
+				}
 
 			}
 
