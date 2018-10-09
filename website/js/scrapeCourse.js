@@ -1,30 +1,71 @@
+/**
+ * Scrapes a given course - all variables but courseid are just passing through the function
+ * @param {string} courseid The course to be scraped ie MATH1131
+ * @param {boolean} isSpecial True if this function is being called from the load special course field
+ * @param {string} defaultState The default state (ie completed, planned, ignored) that will be set
+ * @param {boolean} addToSpecialCourseTable True if this is a course being loaded for the first time
+ */
 function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable) {
 
-  console.log("requesting website. courseid: " + courseid);
+  // Update Progress
+  console.log("Attempting to scrape: " + courseid);
   updateCourseProgressBanner("Downloading handbook page");
 
-  doc = {}
+  // Attempt to find the course in the undergraduate handbook
+  scrapeCourseURL(courseid, 'undergraduate', isSpecial, defaultState, addToSpecialCourseTable);
 
-  var url = "https://www.handbook.unsw.edu.au/undergraduate/courses/2019/" + courseid;
+};
+
+/**
+ * Scrapes a given course in a specific handbook - all variables but courseid are just passing through the function
+ * @param {string} courseid The course to be scraped ie MATH1131
+ * @param {string} level The level to scape at ie undergraduate or postgraduate
+ * @param {boolean} isSpecial True if this function is being called from the load special course field
+ * @param {string} defaultState The default state (ie completed, planned, ignored) that will be set
+ * @param {boolean} addToSpecialCourseTable True if this is a course being loaded for the first time
+ */
+function scrapeCourseURL(courseid, level, isSpecial, defaultState, addToSpecialCourseTable){
+
+  // Initalize object to hold all of the course information
+  doc = {};
+
+  // Set url to be scraped
+  var url = "https://www.handbook.unsw.edu.au/" + level + "/courses/2019/" + courseid;
 
   // Bellow only works for testing
   // $.get(url, function(response) {
 
   // All Origins - times: 5000,3500,3500,5800,5254,5165,7203,6903
+  // Get the url
   $.get('https://allorigins.me/get?method=raw&url=' + encodeURIComponent(url) + '&callback=?', function(response){
-    console.log("Scraping " + url);  
+
+    // Update progress
+    console.log("Scraping: " + url);  
     updateCourseProgressBanner("Scraping data");  
 
+    // Initalize the fields of doc
     doc["longname"] = $(response).find("#subject-intro h2 span").text();
     doc["prereqs"] = [];
     doc["terms"] = [];
 
+    // Check that the page scraped is actually a course page, if not:
     if (doc["longname"] === "") {
-      console.log("No title found. Assumed error page");
-      updateCourseProgressBanner("Page not found on the handbook", "text-danger");
-      return
-    }
 
+      // If postgraduate hasnt been scraped yet, then try scraping it and then end this function
+      if(level != 'postgraduate'){
+        scrapeCourseURL(courseid, 'postgraduate', isSpecial, defaultState, addToSpecialCourseTable);
+        return;
+
+      // If postgraduate has been scraped, end
+      } else {
+
+        // Update progress
+        console.log("No title found in"+url+". Assumed error page");
+        updateCourseProgressBanner("Page not found", "text-danger");
+        return;
+
+      }
+    }
 
     // Loop through prereq elements
     $(response).find('#readMoreSubjectConditions > div > div').each( function(i_prereqEl, prereqEl){
@@ -47,7 +88,6 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
       }
     });
 
-
     // Loop through side boxes for offered terms
     $(response).find('.hide-lg .a-column-md-6 .o-attributes-table-item p').each( function(i_sideBox, sideBox){
       label = $(sideBox).text();
@@ -67,22 +107,35 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
       }
     });
 
+    // Log the information pulled
     console.log(doc);
 
+    // Upload the document to the database
     db.doc("courses/" + courseid).set(doc, { merge: true })
     .then(function() {
+
+      // Update progress
       console.log("document uploaded");
       updateCourseProgressBanner("Success", "text-success");
+
+      // Load the course into the session and end
       loadCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable);
+      return true;
+
     })
 
   }) // End request
+
+  // Error catch
   .fail( function(error) {
+
+    // Update progress
     console.log("ERROR degreeScraper. Unreachable url");
     console.error(error);
+    
   });
 
-};
+}
 
 function cleanPrereqExp(exp) {
   console.log('cleanPrereqExp input:',exp)
@@ -101,7 +154,11 @@ function cleanPrereqExp(exp) {
   return exp
 }
 
-
+/**
+ * Updates the text and style in the course progress banner
+ * @param {string} message The message to be displayed
+ * @param {string} addClass The class to style the message with
+ */
 function updateCourseProgressBanner(message, addClass) {
   $("#courseProgressBanner").html("<small class='mb-1 " + addClass + "'>" + message + "</small>");
 }
