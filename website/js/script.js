@@ -389,6 +389,14 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 		db.doc("courses/" + courseID).get().then(doc => {
 
 			if (doc.exists) {
+				console.log(`download doc ${doc.data().longname}`)
+
+				// 8.64e7 is 1 day in milliseconds
+				if (doc.data().lastUpdate && doc.data().lastUpdate + 8.54e7 < Date.now()) {
+					console.log(`${doc.data().longname} is out of date. today is ${Date.now()}. lastUpdate is ${doc.data().lastUpdate}`);
+					scrapeCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable);
+				}
+
 				// Increment use counter
 				previousUsecases = doc.data().usecases || 0;
 				db.doc("courses/" + courseID).set({usecases: previousUsecases + 1},{merge:true});

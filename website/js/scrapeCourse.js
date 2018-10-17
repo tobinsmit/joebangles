@@ -3,7 +3,7 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
   console.log("requesting website. courseid: " + courseid);
   updateCourseProgressBanner("Downloading handbook page");
 
-  doc = {}
+  newDoc = {}
 
   var url = "https://www.handbook.unsw.edu.au/undergraduate/courses/2019/" + courseid;
 
@@ -15,11 +15,11 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
     console.log("Scraping " + url);  
     updateCourseProgressBanner("Scraping data");  
 
-    doc["longname"] = $(response).find("#subject-intro h2 span").text();
-    doc["prereqs"] = [];
-    doc["terms"] = [];
+    newDoc["longname"] = $(response).find("#subject-intro h2 span").text();
+    newDoc["prereqs"] = [];
+    newDoc["terms"] = [];
 
-    if (doc["longname"] === "") {
+    if (newDoc["longname"] === "") {
       console.log("No title found. Assumed error page");
       updateCourseProgressBanner("Page not found on the handbook", "text-danger");
       return
@@ -30,7 +30,7 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
     $(response).find('#readMoreSubjectConditions > div > div').each( function(i_prereqEl, prereqEl){
       label = $(prereqEl).text();
       console.log("Text in prereq label:", label);
-      if (/pre[-]?req(uisite)?[s]?:[ ]?/i.exec(label)) {
+      if (/pre[-]?req(uisite)?[s]?[:;]?[ ]?/i.exec(label)) {
         prereqExp = cleanPrereqExp(label);
         coursePattern = /\b[A-Z]{4}[0-9]{4}\b/g;
         courses = [];
@@ -39,7 +39,7 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
           courses.push(match[0]);
         }
         console.log(courses);
-        doc["prereqs"].push({
+        newDoc["prereqs"].push({
           label : label,
           exp : prereqExp,
           courses : courses
@@ -60,16 +60,21 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
       }
       if (terms.length > 0) {
         console.log(terms);
-        doc["terms"].push({
+        newDoc["terms"].push({
           label : label,
           terms : terms
         });
       }
     });
+    newDoc.lastUpdate = Date.now();
 
-    console.log(doc);
+    console.log(newDoc);
 
-    db.doc("courses/" + courseid).set(doc, { merge: true })
+    db.doc("courses/" + courseid).get().then(oldDoc => {
+
+    })
+
+    db.doc("courses/" + courseid).set(newDoc, { merge: true })
     .then(function() {
       console.log("document uploaded");
       updateCourseProgressBanner("Success", "text-success");
