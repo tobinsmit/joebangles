@@ -1,0 +1,248 @@
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <div class="row">
+      <div class="col">
+            
+      </div>
+      <div class="col">
+
+      </div>
+    </div>
+
+    <input type="button" name="go" value="Get All Courses" onclick="getAllCourses()" >    
+
+    <form>
+      Course: <input type="text" name="courseid" id="coursetf">
+      <input type="button" name="go" value="Go" onclick="tgetCourse()" >
+    </form>
+    <p id="msg"></p>
+
+    <table>
+      <tr>
+        <td><b>ID</b></td>
+        <td id="id"></td>
+      </tr>
+      <tr>
+        <td><b>Name</b></td>
+        <td><input style="width:600px" type="text" name="name" id="name"></td>
+      </tr>
+      <tr>
+        <td><b>Terms</b></td>
+        <td><input style="width:600px" type="text" name="term" id="terms"></td>
+      </tr>
+      <tr>
+        <td><b>Prereq String</b></td>
+
+        <td><textarea style="width:600px;height:100px;" id="prereqstring"></textarea></td>
+      </tr>
+      <tr>
+        <td><b>Prereq Exp</b></td>
+        <td><textarea style="width:600px;height:100px;" id="prereqexp"></textarea></td>
+        <td><input type="button" name="update" value="Validate" onclick="validate()"></td>
+        <td><input type="button" name="update" value="Clear" onclick="$('#prereqexp').val('');"></td>
+        <td><input type="button" name="skip" value="Skip" onclick="skip()"></td>
+      </tr>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
+    <script src="../website/js/scrapeCourse.js?v=1.2"></script>
+
+<script type="text/javascript">
+
+// Initialize Firebase
+firebase.initializeApp({
+apiKey: "AIzaSyCm120EmJYkXDaNv7Rttk7HU0ZT9RmeaRU",
+authDomain: "joebangles-unsw.firebaseapp.com",
+databaseURL: "https://joebangles-unsw.firebaseio.com",
+projectId: "joebangles-unsw",
+storageBucket: "",
+messagingSenderId: "729319341102"
+});
+var db = firebase.firestore();
+
+var counter = 0;
+
+validCourses = {};
+invalidCourses = {};
+
+// Dismiss warning
+db.settings({ timestampsInSnapshots: true });
+
+function displayCourse(courseid){
+  
+  course = invalidCourses["'"+courseid+"'"];
+  if(typeof course === 'undefined'){
+    course = validCourses["'"+courseid+"'"];
+  }
+
+  $('#name').val(course.longname);
+  $('#id').html(courseid);
+
+  if(typeof course.terms[0] !== 'undefined'){
+    $('#terms').val(course.terms[0].terms);
+  } else {
+    $('#terms').val("");
+  }
+
+  if(typeof course.prereqs[0] !== 'undefined'){
+    $('#prereqstring').val(course.prereqs[0].label);
+    $('#prereqexp').val(course.prereqs[0].exp);
+  } else {
+    $('#prereqstring').val("");
+    $('#prereqexp').val("");
+  }
+}
+
+function tgetCourse(){
+  course = $('#coursetf').val().toUpperCase();
+
+  displayCourse(course);
+  
+  db.doc("courses/" + course).get().then(doc => {
+    if (doc.exists) {
+      if(doc.data().hasValidExp == true){
+          validCourses["'"+doc.id+"'"] = doc.data();
+        } else {
+          invalidCourses["'"+doc.id+"'"] = doc.data();
+        }
+        console.log(validCourses["'"+doc.id+"'"])
+      
+
+      $('#msg').html("Success");
+    } else {
+      $('#msg').html("Course not found");
+    }
+  });
+
+}
+function skip(){
+  counter++;
+  displayCourse(Object.keys(invalidCourses)[counter].substring(1,9));
+}
+
+function getAllCourses(){
+  $('#msg').html("Loading...");
+  db.collection("courses").get().then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+        if(doc.data().hasValidExp == true){
+          validCourses["'"+doc.id+"'"] = doc.data();
+        } else {
+          invalidCourses["'"+doc.id+"'"] = doc.data();
+        }
+    });
+
+    displayCourse(Object.keys(invalidCourses)[counter].substring(1,9));
+
+    updateStats();
+    });
+}
+
+// Validate a course
+function validate(){
+  courseid = $('#id').html().toUpperCase();
+
+  db.doc("courses/" + courseid).get().then(doc => {
+    if (doc.exists) {
+      doct = {};
+
+      doct.longname = $('#name').val()
+      doct.hasValidExp = true;
+
+      doct["prereqs"] = [];
+      doct["prereqs"].push({
+          label : $('#prereqstring').val(),
+          exp : $('#prereqexp').val()
+        });
+
+      db.doc("courses/" + courseid).set(doct, { merge: true })
+
+      validCourses["'"+courseid+"'"] = invalidCourses["'"+courseid+"'"];
+      delete invalidCourses["'"+courseid+"'"];
+      updateStats();
+      counter++;
+
+      displayCourse(Object.keys(invalidCourses)[counter].substring(1,9));
+    }
+  });
+  
+}
+
+function updateStats(){
+      $('#msg').html("Valid Courses: "+Object.keys(validCourses).length+
+      "<br>Invalid Courses: "+Object.keys(invalidCourses).length+
+      "<br>Total: "+(Object.keys(validCourses).length+Object.keys(invalidCourses).length));
+}
+
+function tupdate(){
+  course = $('#id').val().toUpperCase();
+  var doc = {};
+
+  doc.longname = $('#name').val()
+
+  doc["prereqs"] = [];
+  doc["prereqs"].push({
+    exp : $('#prereqexp').val(),
+    label : $('#prereqstring').html()
+  });
+
+  db.doc("courses/" + course).set(doc, { merge: true })
+}
+
+function setvalidfield(){
+  db.collection("courses").get().then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+        course = doc.id;
+        var doct = doc.data();
+
+        doct.hasValidExp = false;
+  
+  db.doc("courses/" + course).set(doct, { merge: true })
+    });
+  });
+}
+
+function removeEndSymbols(){
+  db.collection("courses").get().then(
+    function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+
+        if(/^[a-z]{4}/.test(doc.id)){
+          db.collection("courses").doc(doc.id).delete().then(function() {
+    console.log("Document successfully deleted!");
+}).catch(function(error) {
+    console.error("Error removing document: ", error);
+});
+        }
+
+        
+
+        // if(typeof doc.data().prereqs[0] === 'undefined'){
+
+        // }
+        //    if(!doc.data().prereqs[0].exp == ""){
+        //     console.log(doc.id + " >> " + doc.data().prereqs[0].exp);
+        //     var docn = {};
+        //       docn["prereqs"] = [];
+        //       docn["prereqs"].push({
+        //         exp : doc.data().prereqs[0].exp.substring(0, doc.data().prereqs[0].exp.length-1),
+        //         label : doc.data().prereqs[0].label
+        //     });
+        //     db.doc("courses/" + doc.id).set(docn, { merge: true })
+        //   }
+        } );
+      }
+    );
+  }
+
+</script>
+
+  </body>
+</html>

@@ -579,7 +579,10 @@ function setStatusIcon(courseID, state, initialLoad){
 
 // Fill the div #specDisplay with course levels, levels, compulsory subs (checkbox) and option sets (radio)
 // fromLoadSpec is true if this function is called from loadSpec
-function fillSpecDisplay(specID, fromLoadSpec) {
+// el is the element that called the function, optional
+function fillSpecDisplay(specID, fromLoadSpec, el) {
+
+	$(el).attr('id');
 
 	var defaultState;
 	var isSuccess = false;
@@ -750,7 +753,7 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 			}
 			if(fromLoadSpec){
 				$('#specialisationsTable').append(
-					'<tr><td><span onclick="fillSpecDisplay(&#39'+specID+'&#39, false)" class="internal-link">'+specID+'</span></td>'+
+					'<tr><td><span id="'+specID+'_selector" onclick="fillSpecDisplay(&#39'+specID+'&#39, false, '+this+')" class="internal-link">'+specID+'</span></td>'+
 					'<td><span class="fa fa-times icon" onclick="removeSpec(&#39'+specID+'&#39)"></span></td></tr>');
 			}
 		} 

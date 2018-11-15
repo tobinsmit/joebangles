@@ -26,7 +26,7 @@ function getAllCourses() {
         $(subheading).parent().next().find('.rowHighlight, .rowLowlight').each( function(i_row, row){
           $(row).find('.data').each( function(i, el) {
             if (i == 0) {
-              console.log($(el).text());
+              //sconsole.log($(el).text());
               course = []
               school = $(el).next().text();
 
@@ -43,12 +43,8 @@ function getAllCourses() {
                     $(subheading).parent().next().find('.rowHighlight, .rowLowlight').each( function(i_courserow, courserow){
                       $(courserow).find('.data').each( function(i, el) {
                         if (i == 0) {
+                          scrapeCourse($(el).text(), false, "planned", false)
                           console.log($(el).text());
-                          course.push($(el).text() + ' - ' + $(el).next().text());
-                          courseList.push({
-                            name : $(el).text() + ' - ' + $(el).next().text(),
-                            category : school
-                          })
                         }
                       });
                     });

@@ -48,6 +48,8 @@ function scrapeCourseURL(courseid, level, isSpecial, defaultState, addToSpecialC
     doc["prereqs"] = [];
     doc["terms"] = [];
 
+   console.log($(response).find("#subject-intro h2 span").text());
+
     // Check that the page scraped is actually a course page, if not:
     if (doc["longname"] === "") {
 
@@ -132,7 +134,7 @@ function scrapeCourseURL(courseid, level, isSpecial, defaultState, addToSpecialC
     // Update progress
     console.log("ERROR degreeScraper. Unreachable url");
     console.error(error);
-    
+
   });
 
 }
