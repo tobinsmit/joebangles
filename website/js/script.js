@@ -301,30 +301,6 @@ function dragDropRemoveRow() {
 	$('.year').last().remove();
 }
 
-// When the terms are changed
-$(document).on('click', '.term-btn', function(){
-
-	var courseID = $(this).attr('id').substring(0,8);
-	var term;
-
-	if( $(this).attr('id').substring(9) == 1){
-		term = "Term 1";
-	} else if( $(this).attr('id').substring(9) == 2){
-		term = "Term 2";
-	} else if( $(this).attr('id').substring(9) == 3){
-		term = "Term 3";
-	} else if( $(this).attr('id').substring(9) == 4){
-		term = "Summer Term";
-	}
-
-	if(userData.courses["'"+courseID+"'"].availableTerms.indexOf(term) == -1){
-		userData.courses["'"+courseID+"'"].availableTerms.push(term);
-	} else {
-		userData.courses["'"+courseID+"'"].availableTerms
-	}
-
-});
-
 /*
  * Removing functions
  */
@@ -488,10 +464,36 @@ function setTerms(courseID){
 	
 	for(j in terms){
 		$('#'+courseID+'_'+terms[j]).addClass('active');
-
 	}
 
 }
+
+// Change offering terms when one of the toggle buttons is pressed
+$(document).on('click', '.term-btn', function(){
+
+	term_longname = "";
+	term = $(this).html();
+	courseID = $(this).attr('id').substring(0,8);
+
+	terms = userData.courses["'"+courseID+"'"].availableTerms;
+
+	if(term == "1"){
+		term_longname = "Term 1";
+	} else if(term == "2"){
+		term_longname = "Term 2";
+	} else if(term == "3"){
+		term_longname = "Term 3";
+	} else if(term == "Sum."){
+		term_longname = "Summer Term";
+	}
+
+	if(terms.includes(term_longname)){
+		terms.splice(terms.indexOf(term_longname), 1);
+	} else {
+		terms.push(term_longname);
+	}
+
+});
 
 $(document).on('click', '.icon', function(){
 
