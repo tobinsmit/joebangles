@@ -152,7 +152,7 @@ loadUI = function() {
 	// Load special courses
 	for(var course in userData.courses){
 		if(userData.courses[course].isSpecial){
-			loadCourse(course.substring(1,9), true, "planned", true);
+			loadCourse(course.substring(1,9), true, "planned", true, null);
 		}
 	}
 
@@ -217,7 +217,10 @@ refresh = function() {
 // addSpec Click
 $('#addSpec').on('click', function() {
 	
-	loadSpec(document.getElementById("specialisationTF").value.toUpperCase());
+	specID = document.getElementById("specialisationTF").value.toUpperCase();
+
+	if(!userData.specs.includes(specID))
+		loadSpec(specID);
 
 });
 
@@ -252,7 +255,7 @@ $('#addCourse').on('click', function() {
 	$('#courseAddInput').val("");
 
 	if(typeof userData.courses["'"+courseid+"'"] === 'undefined'){
-		loadCourse(courseid, true, "planned", true);
+		loadCourse(courseid, true, "planned", true, null);
 	} else {
 		updateCourseProgressBanner("Course already offered in 1 or more specialisations.", "text-danger");
 	}
@@ -310,8 +313,6 @@ function removeSpec(specID) {
 
 	var table = document.getElementById('specialisationsTable');
 
-	console.log(table.childNodes);
-
 	// Remove element from table
 	table.removeChild(table.childNodes[userData.specs.indexOf(specID)+1])
 
@@ -326,13 +327,14 @@ function removeSpec(specID) {
 		$('#specDisplay').html("");
 	}
 
+	removeSpecObj(specID);
+
 }
 
 // Removes the course at index 'index' from the courseList array
 function removeSpecialCourse(courseID) {
 
 	var table = document.getElementById('coursesTable');
-	console.log(table.childNodes);
 
 	for(var i in table.childNodes){
 
@@ -355,7 +357,8 @@ function removeSpecialCourse(courseID) {
 // isSpecial: true if a special course if being loaded
 // defaultState: default state (ie completed, planned, ignored) that will be set
 // addToSpecialCourseTable: true if this is a course being loaded for the first time
-function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
+// callerSpec: The spec that called loadCourse, so that it can be added to the array of specs this course belongs to
+function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable, callerSpec){
 
 	// If course **IS NOT** in userData
 	if(typeof userData.courses["'"+courseID+"'"] === 'undefined'){
@@ -377,6 +380,7 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 					chosenYear : null,
 					prereq : null,
 					state : defaultState,
+					belongsTo : [callerSpec]
 				};
 
 				if (isSpecial) {
@@ -398,7 +402,7 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 					userData.courses["'"+courseID+"'"].prereqString = doc.data().prereqs[0].label;
 				}
 
-				loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable);
+				loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable, callerSpec);
 
 			} else {
 
@@ -428,6 +432,13 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable){
 					'</div>'+
 				'</td></tr>');
 		} 
+
+		// Add the caller spec to the array of specs this course belongs to if needed.
+		if((typeof callerSpec !== 'undefined') && (callerSpec != null)){
+			if(!userData.courses["'"+courseID+"'"].belongsTo.includes(callerSpec)){
+				userData.courses["'"+courseID+"'"].belongsTo.push(callerSpec);
+			}
+		}
 
 		setStatusIcon(courseID, userData.courses["'"+courseID+"'"].state, true);
 		setTerms(courseID);
@@ -727,13 +738,13 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 				}
 
 				for (courseid in levelObj.compulsory) {
-					loadCourse(courseid, false, defaultState, false);
+					loadCourse(courseid, false, defaultState, false, specID);
 				}
 
 				for (i_optionSet in levelObj.optionSets) {
 					optionSet = levelObj.optionSets[i_optionSet]
     				for (courseid in optionSet) {
-    					loadCourse(courseid, false, defaultState, false);
+    					loadCourse(courseid, false, defaultState, false, specID);
     				}
 				}
 			}
@@ -748,6 +759,7 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 			if(userData.specs.indexOf(specID) == -1){
 
 				userData.specs.push(specID);
+				//console.log(userData.specs);
 
 			}
 			if(fromLoadSpec){
@@ -764,41 +776,22 @@ function fillSpecDisplay(specID, fromLoadSpec) {
 removeSpecObj = function(removeSpecID) {
 	deleteCourses = {};
 
-	// Set remove value for subjects in removeSpecID to true
-	for (courseLevel in userData.specs[removeSpecID].courseLevels) {
-		for (course in userData.specs[removeSpecID].courseLevels[courseLevel].compulsory) {
-			deleteCourses[courseID] = true;
-		}
-		for (optionSet in userData.specs[removeSpecID].courseLevels[courseLevel].optionSets) {
-			for (course in userData.specs[removeSpecID].courseLevels[courseLevel].optionSets[optionSet]) {
-				deleteCourses[courseID] = true;
-			}
+	for(i in userData.courses){
+		course = userData.courses[i];
+
+		if(course.belongsTo.includes(removeSpecID) && course.belongsTo.length == 1){
+			deleteCourses[i] = true;
+		} else {
+			deleteCourses[i] = false;
 		}
 	}
-
-	// Set remove value for subjects in other specs to false
-	for (specID in userData.specs) {
-		if (specID != removeSpecID) {
-			for (courseLevel in userData.specs[specID].courseLevels) {
-				for (course in userData.specs[specID].courseLevels[courseLevel].compulsory) {
-					deleteCourses[courseID] = false;
-				}
-				for (optionSet in userData.specs[specID].courseLevels[courseLevel].optionSets) {
-					for (course in userData.specs[specID].courseLevels[courseLevel].optionSets[optionSet]) {
-						deleteCourses[courseID] = false;
-					}
-				}
-			}
-		}
-	}
-
-	// Delete the spec
-	delete userData.specs[removeSpecID]
 
 	// Delete each course
 	for (courseID in deleteCourses) {
 		if (deleteCourses[courseID] == true) {
 			delete userData.courses[courseID];
+		} else {
+			userData.courses[courseID].belongsTo.splice(removeSpecID, 1);
 		}
 	}
 }
