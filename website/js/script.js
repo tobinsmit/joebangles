@@ -218,6 +218,7 @@ refresh = function() {
 $('#addSpec').on('click', function() {
 	
 	specID = document.getElementById("specialisationTF").value.toUpperCase();
+	document.getElementById("specialisationTF").value = "";
 
 	if(!userData.specs.includes(specID))
 		loadSpec(specID);
