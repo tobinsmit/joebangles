@@ -123,10 +123,12 @@ function scrapeCourseURL(courseid, level, isSpecial, defaultState, addToSpecialC
           newDoc.previousVersions.push(oldDoc.data());
         }
  
-        if(newDoc.prereqs[0] != null && oldDoc.data().prereqs[0] != null && newDoc.prereqs[0].exp == oldDoc.data().prereqs[0].exp) {
+        if (newDoc.prereqs[0] != null && oldDoc.data().prereqs[0] != null && newDoc.prereqs[0].exp == oldDoc.data().prereqs[0].exp) {
+          newDoc.hasValidExp = oldDoc.data().hasValidExp;
+        } else if (newDoc.prereqs[0] == null && oldDoc.data().prereqs[0] == null) {
           newDoc.hasValidExp = oldDoc.data().hasValidExp;
         } else {
-          newDoc.hasValidExp = null;
+          newDoc.hasValidExp = false;
         }
       }
 
