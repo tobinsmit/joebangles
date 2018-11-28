@@ -31,7 +31,7 @@
 .course-invalid{
   background-color: red;
   color: white;
-  padding: 13px;
+  /*padding: 13px;*/
 }
 .gu-transit {
   background-color: white;
