@@ -499,12 +499,16 @@ $(document).on('click', '.term-btn', function(){
 		term_longname = "Summer Term";
 	}
 
-	if(terms.includes(term_longname)){
-		terms.splice(terms.indexOf(term_longname), 1);
+	if(terms == null){
+		terms = [term_longname];
 	} else {
-		terms.push(term_longname);
+		if(terms.includes(term_longname)){
+			terms.splice(terms.indexOf(term_longname), 1);
+		} else {
+			terms.push(term_longname);
+		}
 	}
-
+	userData.courses["'"+courseID+"'"].availableTerms = terms;
 });
 
 $(document).on('click', '.icon', function(){
