@@ -71,15 +71,36 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
     console.log(newDoc);
 
     db.doc("courses/" + courseid).get().then(oldDoc => {
+      if (oldDoc.exists) {
+        // Check is docs are different and add previous version to array
+        if (!areDocsSame(oldDoc.data(), newDoc)) {
+          if (oldDoc.data().previousVersions == null) {
+            newDoc.previousVersions = [];
+          } else {
+            newDoc.previousVersions = oldDoc.data().previousVersions;
+          }
+          newDoc.previousVersions.push(oldDoc.data());
+        }
+
+        if(newDoc.prereqs[0] != null && oldDoc.data().prereqs[0] != null && newDoc.prereqs[0].exp == oldDoc.data().prereqs[0].exp) {
+          newDoc.hasValidExp = oldDoc.data().hasValidExp;
+        } else {
+          newDoc.hasValidExp = null;
+        }
+      }
+
+      console.log("newDoc", newDoc);
+
+
+      db.doc("courses/" + courseid).set(newDoc, { merge: true })
+      .then(function() {
+        console.log("document uploaded");
+        updateCourseProgressBanner("Success", "text-success");
+        loadCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable);
+      })
 
     })
 
-    db.doc("courses/" + courseid).set(newDoc, { merge: true })
-    .then(function() {
-      console.log("document uploaded");
-      updateCourseProgressBanner("Success", "text-success");
-      loadCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable);
-    })
 
   }) // End request
   .fail( function(error) {
@@ -88,6 +109,15 @@ function scrapeCourse(courseid, isSpecial, defaultState, addToSpecialCourseTable
   });
 
 };
+
+function areDocsSame(a, b) {
+  if (a.longname != b.longname) return false;
+  if ((a.prereqs == null && b.prereqs != null) || (a.prereqs != null && b.prereqs == null)) return false;
+  if (a.prereqs != null && b.prereqs != null && a.prereqs[0] != null && b.prereqs[0] != null && a.prereqs[0].label != b.prereqs[0].label) return false;
+  if ((a.terms == null && b.terms != null) || (a.terms != null && b.terms == null)) return false;
+  if (a.terms != null && b.terms != null && a.terms[0] != null && b.terms[0] != null && a.terms[0].label != b.terms[0].label) return false;
+  return true;
+}
 
 function cleanPrereqExp(exp) {
   console.log('cleanPrereqExp input:',exp)
