@@ -444,7 +444,7 @@ function loadCourse(courseID, isSpecial, defaultState, addToSpecialCourseTable, 
 
 		// Add the caller spec to the array of specs this course belongs to if needed.
 		if((typeof callerSpec !== 'undefined') && (callerSpec != null)){
-			if(!userData.courses["'"+courseID+"'"].belongsTo.includes(callerSpec)){
+			if(userData.courses["'"+courseID+"'"].belongsTo && !userData.courses["'"+courseID+"'"].belongsTo.includes(callerSpec)){
 				userData.courses["'"+courseID+"'"].belongsTo.push(callerSpec);
 			}
 		}
